@@ -5,12 +5,6 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>AnekDevanagari-Bold.ttf</string>
-		<string>Inter_18pt-Italic.ttf</string>
-		<string>Inter_18pt-Medium.ttf</string>
-		<string>Inter_18pt-Regular.ttf</string>
-		<string>Inter_18pt-SemiBold.ttf</string>
-		<string>Inter_24pt-Black.ttf</string>
-		<string>Inter_28pt-Bold.ttf</string>
 		<string>Nunito-Light.ttf</string>
 		<string>Nunito-SemiBold.ttf</string>
 	</array>
