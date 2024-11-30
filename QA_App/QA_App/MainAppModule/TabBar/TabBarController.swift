@@ -28,7 +28,11 @@ class TabBarController: UITabBarController {
         
         customizeTabBarAppearance()
         
-        setViewControllers([homePage, leaderBoardPage, profilePage], animated: true)
+        let homePageNavController = UINavigationController(rootViewController: homePage)
+        let leaderBoardPageNavController = UINavigationController(rootViewController: leaderBoardPage)
+        let profilePageNavController = UINavigationController(rootViewController: profilePage)
+        
+        setViewControllers([homePageNavController, leaderBoardPageNavController, profilePageNavController], animated: true)
     }
     
     private func createTab(icon: String, vc: UIViewController, identifier: String, title: String) -> UIViewController {

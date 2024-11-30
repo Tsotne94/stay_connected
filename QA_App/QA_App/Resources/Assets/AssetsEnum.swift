@@ -22,6 +22,7 @@ enum AppAssets {
         static let tagBackground = "tagBackgroundColor"
         static let tagText = "tagTextColor"
         static let bodyText = "textBlackColor"
+        static let replayColor = "replayColor"
     }
 
     enum Icons {

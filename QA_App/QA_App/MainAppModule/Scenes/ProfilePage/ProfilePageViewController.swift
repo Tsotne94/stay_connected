@@ -11,6 +11,7 @@ class ProfilePageViewController: UIViewController, IdentifiableProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.isNavigationBarHidden = true
         title = "Profile"
     }
 }

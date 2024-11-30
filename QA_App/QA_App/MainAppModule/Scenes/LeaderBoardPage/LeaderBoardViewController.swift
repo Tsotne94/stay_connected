@@ -11,7 +11,7 @@ class LeaderBoardViewController: UIViewController,  IdentifiableProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        navigationController?.isNavigationBarHidden = true
         title = "LeaderBoard"
     }
     
