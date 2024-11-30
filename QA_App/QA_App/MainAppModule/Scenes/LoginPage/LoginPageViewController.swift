@@ -117,7 +117,7 @@ final class LoginPageViewController: UIViewController {
         passwordTextField.leftView = leftPaddingView
         passwordTextField.rightView = rightPaddingView
         passwordTextField.leftViewMode = .always
-        passwordTextField.rightViewMode = .whileEditing
+        passwordTextField.rightViewMode = .always
         passwordTextField.isSecureTextEntry = true
         
         passwordTextField.placeholder = "Password"
