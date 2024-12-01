@@ -67,7 +67,7 @@ class TabBarController: UITabBarController {
         
         tabBar.standardAppearance = tabBarAppearance
         tabBar.scrollEdgeAppearance = tabBarAppearance
-        
+
         tabBar.layer.cornerRadius = 27
         tabBar.layer.masksToBounds = true
         tabBar.clipsToBounds = true
