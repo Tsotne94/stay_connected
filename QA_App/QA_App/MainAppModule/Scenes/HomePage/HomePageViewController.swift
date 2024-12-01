@@ -51,11 +51,13 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
     }
     
     private func setupGeneralButton() {
-        configureButton(generalButton, title: "General")
+        let color = UIColor(named: AppAssets.Colors.primaryButtonHighlighted) ?? UIColor()
+        configureButton(generalButton, title: "General", color: color)
     }
     
     private func setupPersonalButton() {
-        configureButton(personalButton, title: "Personal")
+        let color = UIColor(named: AppAssets.Colors.primaryButton) ?? UIColor()
+        configureButton(personalButton, title: "Personal", color: color)
     }
     
     private func setupQuestionsTableView() {
@@ -65,13 +67,13 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
         questionsTableView.backgroundColor = .clear
     }
     
-    private func configureButton(_ button: UIButton, title: String) {
+    private func configureButton(_ button: UIButton, title: String, color: UIColor) {
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight(rawValue: 600))
-        button.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
+        button.backgroundColor = color
         button.layer.cornerRadius = 12
         button.clipsToBounds = true
     }

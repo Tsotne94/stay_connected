@@ -54,8 +54,7 @@ class QuestionsTableView: UIView {
         table.delegate = self
         table.dataSource = self
         
-        table.rowHeight = UITableView.automaticDimension
-        table.estimatedRowHeight = 100
+        table.rowHeight = 115
     }
     
     private func setupConstraints() {
@@ -70,7 +69,7 @@ class QuestionsTableView: UIView {
             tagsCollection.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
             tagsCollection.heightAnchor.constraint(equalToConstant: 40),
             
-            table.topAnchor.constraint(equalTo: tagsCollection.bottomAnchor, constant: 10),
+            table.topAnchor.constraint(equalTo: tagsCollection.bottomAnchor, constant: 5),
             table.leftAnchor.constraint(equalTo: leftAnchor),
             table.rightAnchor.constraint(equalTo: rightAnchor),
             table.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -82,7 +81,7 @@ class QuestionsTableView: UIView {
 extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

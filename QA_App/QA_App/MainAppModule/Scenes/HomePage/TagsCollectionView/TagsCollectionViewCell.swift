@@ -31,7 +31,7 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
         tagButton.backgroundColor = UIColor(named: AppAssets.Colors.tagBackground)
         tagButton.setTitleColor(UIColor(named: AppAssets.Colors.tagText), for: .normal)
         
-        tagButton.layer.cornerRadius = 18
+        tagButton.layer.cornerRadius = 12
         tagButton.clipsToBounds = true
         
         NSLayoutConstraint.activate([
@@ -39,6 +39,7 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
             tagButton.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             tagButton.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             tagButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            tagButton.heightAnchor.constraint(equalToConstant: 24),
         ])
     }
     
