@@ -11,7 +11,7 @@ class QuestionsTableView: UIView {
     private let searchBar = UISearchBar()
     private let tagsCollection = TagsCollectionView()
     private let table = UITableView()
-    private let tableCount = 0
+    private let tableCount = 10
     
     private let noQuestionsLabel = UILabel()
     private let beFirstLabel = UILabel()
