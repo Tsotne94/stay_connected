@@ -17,6 +17,7 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         super.viewDidLoad()
         title = "Profile"
         view.backgroundColor = .white
+        navigationController?.isNavigationBarHidden = true
         setupUI()
     }
 
@@ -65,6 +66,7 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.register(ProfileCell.self, forCellReuseIdentifier: "ProfileCell")
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .singleLine
+        tableView.isScrollEnabled = false
     }
 
     private func setupConstraints() {
