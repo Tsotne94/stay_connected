@@ -10,6 +10,7 @@ import UIKit
 class AddQuestionViewController: UIViewController {
     private let titleLabel = UILabel()
     private let titleContainerView = UIView()
+    private let cancelButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,7 @@ class AddQuestionViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
         setupTitleContainer()
         setupTitleLabel()
+        setupCancelButton()
         
         
         
@@ -44,6 +46,15 @@ class AddQuestionViewController: UIViewController {
         titleLabel.textAlignment = .center
     }
     
+    private func setupCancelButton() {
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        titleContainerView.addSubview(cancelButton)
+        
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.setTitleColor(UIColor(named: AppAssets.Colors.primaryButtonHighlighted), for: .normal)
+        cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+    }
+    
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             titleContainerView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -52,7 +63,10 @@ class AddQuestionViewController: UIViewController {
             titleContainerView.heightAnchor.constraint(equalTo: titleContainerView.widthAnchor, multiplier: 0.196),
             
             titleLabel.topAnchor.constraint(equalTo: titleContainerView.topAnchor, constant: 24),
-            titleLabel.centerXAnchor.constraint(equalTo: titleContainerView.centerXAnchor)
+            titleLabel.centerXAnchor.constraint(equalTo: titleContainerView.centerXAnchor),
+            
+            cancelButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            cancelButton.rightAnchor.constraint(equalTo: titleContainerView.rightAnchor, constant: -25)
         ])
         
     }
