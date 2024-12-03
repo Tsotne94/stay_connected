@@ -12,6 +12,8 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
     private let FullnameLabel = UILabel()
     private let EmailLabel = UILabel()
     private let tableView = UITableView()
+    private let titleLabel = UILabel()
+    private let imageButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,11 +24,22 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     private func setupUI() {
+        setupTitle()
         setupImageView()
+        setupImageButton()
         setupFullnameLabel()
         setupEmailLabel()
         setupTableView()
         setupConstraints()
+    }
+    
+    private func setupTitle() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(titleLabel)
+        
+        titleLabel.text = "Profile"
+        titleLabel.font = UIFont(name: MyFonts.anekBold.rawValue, size: 20)
+        titleLabel.textAlignment = .left
     }
 
     private func setupImageView() {
@@ -38,6 +51,16 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         ImageView.layer.cornerRadius = 60
         ImageView.clipsToBounds = true
         ImageView.backgroundColor = .gray
+    }
+    
+    private func setupImageButton() {
+        imageButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageButton)
+        
+        imageButton.setImage(UIImage(named: AppAssets.Icons.camera), for: .normal)
+        imageButton.setTitle("", for: .normal)
+        imageButton.backgroundColor = .clear
+        imageButton.clipsToBounds = true
     }
 
     private func setupFullnameLabel() {
@@ -71,10 +94,17 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15),
+            titleLabel.heightAnchor.constraint(equalToConstant: 20),
+            
             ImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            ImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 156),
+            ImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.175),
             ImageView.widthAnchor.constraint(equalToConstant: 120),
             ImageView.heightAnchor.constraint(equalToConstant: 121),
+            
+            imageButton.bottomAnchor.constraint(equalTo: ImageView.bottomAnchor),
+            imageButton.rightAnchor.constraint(equalTo: ImageView.rightAnchor),
 
             FullnameLabel.topAnchor.constraint(equalTo: ImageView.bottomAnchor, constant: 33),
             FullnameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -84,7 +114,7 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
 
             tableView.topAnchor.constraint(equalTo: EmailLabel.bottomAnchor, constant: 49),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
@@ -101,10 +131,13 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         switch indexPath.row {
         case 0:
             cell.configureCell(leftText: "Score", rightText: "25", icon: nil)
+            cell.selectionStyle = .none
         case 1:
             cell.configureCell(leftText: "Answered Questions", rightText: "15", icon: nil)
+            cell.selectionStyle = .none
         case 2:
             cell.configureCell(leftText: "Log out", rightText: nil, icon: UIImage(named: "logOutIcon"))
+            cell.selectionStyle = .default
         default:
             break
         }
@@ -120,6 +153,7 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         if indexPath.row == 2 {
             print("Log out")
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
