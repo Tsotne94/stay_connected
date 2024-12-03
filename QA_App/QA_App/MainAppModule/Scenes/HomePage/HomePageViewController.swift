@@ -48,17 +48,45 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
         addQuestionButton.backgroundColor = .clear
         addQuestionButton.setTitle("", for: .normal)
         addQuestionButton.setImage(UIImage(named: AppAssets.Icons.add), for: .normal)
+        
+        addQuestionButton.addTarget(self, action: #selector(addQuestionButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func addQuestionButtonTapped() {
+        let vc = AddQuestionViewController()
+        self.present(vc, animated: true, completion: nil)
     }
     
     private func setupGeneralButton() {
         let color = UIColor(named: AppAssets.Colors.primaryButtonHighlighted) ?? UIColor()
         configureButton(generalButton, title: "General", color: color)
+        
+        generalButton.addTarget(self, action: #selector(generalPressed), for: .touchUpInside)
+    }
+    
+    @objc private func generalPressed() {
+        if general != true {
+            generalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted) ?? UIColor()
+            personalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButton) ?? UIColor()
+            general = true
+        }
     }
     
     private func setupPersonalButton() {
         let color = UIColor(named: AppAssets.Colors.primaryButton) ?? UIColor()
         configureButton(personalButton, title: "Personal", color: color)
+        
+        personalButton.addTarget(self, action: #selector(personalPressed), for: .touchUpInside)
     }
+    
+    @objc private func personalPressed() {
+        if general == true {
+            personalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted) ?? UIColor()
+            generalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButton) ?? UIColor()
+            general = false
+        }
+    }
+    
     
     private func setupQuestionsTableView() {
         questionsTableView.translatesAutoresizingMaskIntoConstraints = false

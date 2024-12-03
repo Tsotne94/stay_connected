@@ -65,6 +65,12 @@ class AddQuestionViewController: UIViewController {
         cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.setTitleColor(UIColor(named: AppAssets.Colors.primaryButtonHighlighted), for: .normal)
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        
+        cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
+    }
+    
+    @objc private func cancelTapped() {
+        dismiss(animated: true)
     }
     
     private func setupSubjectContainer() {
@@ -139,16 +145,19 @@ class AddQuestionViewController: UIViewController {
         
         questionTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(questionTextField)
+        
+        questionTextField.delegate = self
     }
     
     private func setupPadding(for searchBar: UITextField) {
-        let rightPaddingView = UIView(frame: CGRect(x: 10, y: 0, width: 35, height: searchBar.frame.height))
+        let rightPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 35, height: 40))
         questionButton.setImage(UIImage(named: AppAssets.Icons.sendMessage), for: .normal)
         questionButton.tintColor = .gray
                     
         questionButton.frame = CGRect(x: 0, y: (rightPaddingView.bounds.height - 25) / 2, width: 30, height: 25)
         questionButton.clipsToBounds = true
         rightPaddingView.addSubview(questionButton)
+        rightPaddingView.isUserInteractionEnabled = true
         
         let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: searchBar.frame.height))
         
@@ -157,6 +166,12 @@ class AddQuestionViewController: UIViewController {
         
         searchBar.leftView = leftPaddingView
         searchBar.leftViewMode = .always
+        
+        questionButton.addTarget(self, action: #selector(sendPressed), for: .touchUpInside)
+    }
+    
+    @objc private func sendPressed() {
+        print("send Pressed")
     }
     
     private func setupConstraints() {
@@ -211,5 +226,12 @@ class AddQuestionViewController: UIViewController {
             questionTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
             questionTextField.heightAnchor.constraint(equalToConstant: 45),
         ])
+    }
+}
+
+extension AddQuestionViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        let enteredText = textField.text ?? ""
+        print("User finished editing with text: \(enteredText)")
     }
 }

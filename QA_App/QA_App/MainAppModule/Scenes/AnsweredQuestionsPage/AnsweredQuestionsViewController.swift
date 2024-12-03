@@ -33,6 +33,12 @@ class AnsweredQuestionsViewController: UIViewController {
         backButton.backgroundColor = .clear
         backButton.setTitle("", for: .normal)
         backButton.setImage(UIImage(named: AppAssets.Icons.back), for: .normal)
+        
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+    }
+    
+    @objc private func backTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupTitleLabel() {
