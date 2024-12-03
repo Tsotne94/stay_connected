@@ -11,7 +11,7 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
     private let profileImageView = UIImageView()
     private let nameLabel = UILabel()
     private let dateLabel = UILabel()
-    let answerLabel = UILabel()
+    private let answerLabel = UILabel()
     private let moreButton = UIButton()
     private let acceptedBadge = UIImageView()
 

@@ -149,7 +149,7 @@ class QuestionsDetailsViewController: UIViewController {
         answerButotn.setImage(UIImage(named: AppAssets.Icons.sendMessage), for: .normal)
         answerButotn.tintColor = .gray
                     
-        answerButotn.frame = CGRect(x: -10, y: 0, width: 25, height: 25)
+        answerButotn.frame = CGRect(x: -10, y: (rightPaddingView.bounds.height - 25) / 2, width: 25, height: 25)
         rightPaddingView.addSubview(answerButotn)
         
         let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: searchBar.frame.height))

@@ -9,7 +9,7 @@ import UIKit
 
 class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     private var collectionView: UICollectionView?
-    private let tags = ["cool", "ios", "macos", "ai", "stack", "uikit", "swiftui", "bang"]
+    private let tags = ["cool", "ios", "macos", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang", "ai", "stack", "uikit", "swiftui", "bang"]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
