@@ -11,6 +11,8 @@ import MyNetworkManager
 class HomePageViewModel: QuestionProtocol {
     private static var response = Response(count: 0, next: nil, previous: nil, results: [Question]())
     private static var tagsArr = [Tag]()
+    weak var delegate: ReloadTable?
+    var questionsChange: (() -> Void)?
     
     let networkManager: NetworkPackage
 
@@ -46,6 +48,9 @@ class HomePageViewModel: QuestionProtocol {
                 switch result {
                 case .success(let questions):
                     HomePageViewModel.response = questions
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
                 case .failure(let error):
                     print("failde to fetch questions for home page" + "\(error.localizedDescription)")
                 }

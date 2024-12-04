@@ -117,10 +117,10 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
             hasAcceptedAnswrMark.widthAnchor.constraint(equalToConstant: 26),
             hasAcceptedAnswrMark.heightAnchor.constraint(equalToConstant: 26),
             
-            tagsView!.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            tagsView!.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-            tagsView!.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -60),
-            tagsView!.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
+//            tagsView!.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+//            tagsView!.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
+//            tagsView!.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -60),
+//            tagsView!.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
         ])
     }
     

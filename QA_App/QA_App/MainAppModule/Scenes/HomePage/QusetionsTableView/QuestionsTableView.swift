@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ReloadTable: AnyObject {
+    func reload()
+}
+
 class QuestionsTableView: UIView {
     private let searchBar = UISearchBar()
     private let tagsCollection: TagsCollectionView?
@@ -22,6 +26,10 @@ class QuestionsTableView: UIView {
         self.tagsCollection = TagsCollectionView(tags: viewModel.tags())
         super.init(frame: .zero)
         setupView()
+        
+        if let homePageViewModel = viewModel as? HomePageViewModel {
+            homePageViewModel.delegate = self
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -29,7 +37,7 @@ class QuestionsTableView: UIView {
     }
     
     private func setupView() {
-        if viewModel?.questionQount ?? 0 > 0 {
+        if viewModel?.questionQount ?? 0 >= 0 {
             setupSearchBar()
             setupTags()
             setupTableView()
@@ -146,5 +154,13 @@ extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
         guard let question = viewModel?.singleQuestion(at: indexPath.row) else { return cell }
         cell.configure(with: question)
         return cell
+    }
+}
+
+extension QuestionsTableView: ReloadTable {
+    func reload() {
+        DispatchQueue.main.async {
+            self.table.reloadData()
+        }
     }
 }
