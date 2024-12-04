@@ -14,15 +14,20 @@ struct Tag: Codable {
 
 struct Question: Codable {
     let id: Int
+    let author: String
     let title: String
-    let tags: [Tag]
+    let content: String
+    let acceptedAnswer: String?
+    let createdAt: String
     let answersCount: Int
+    let tags: [Tag]
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case tags
+        case id, author, title, content
+        case acceptedAnswer = "accepted_answer"
+        case createdAt = "created_at"
         case answersCount = "answers_count"
+        case tags
     }
 }
 
