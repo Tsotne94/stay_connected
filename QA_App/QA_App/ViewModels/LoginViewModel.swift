@@ -64,16 +64,7 @@ class LoginViewModel {
         
         KeyChainManager.deleteAllKeychainItems()
         
-//        try KeyChainManager.delete(service: service, account: accessTokenKey)
-
-//        let existingAccessToken = KeyChainManager.get(service: service, account: accessTokenKey)
-        
-//        if existingAccessToken?.isEmpty == true {
-            try KeyChainManager.save(service: service, account: accessTokenKey, token: accessToken)
-            try KeyChainManager.save(service: service, account: refreshTokenKey, token: refreshToken)
-//            print("Tokens saved successfully.")
-//        } else {
-//            print("Tokens already exist.")
-//        }
+        try KeyChainManager.save(service: service, account: accessTokenKey, token: accessToken)
+        try KeyChainManager.save(service: service, account: refreshTokenKey, token: refreshToken)
     }
 }

@@ -23,7 +23,7 @@ class HomePageViewModel: QuestionProtocol {
     }
     
     func asnwerCount(for index: Int) -> Int {
-        HomePageViewModel.response.results[index].answersCount
+        Int(HomePageViewModel.response.results[index].answersCount)
     }
     
     func tags() -> [Tag] {

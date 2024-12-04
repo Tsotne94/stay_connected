@@ -15,6 +15,7 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
     private let hasAcceptedAnswrMark = UIImageView()
     private let containerView = UIView()
     private var tagsView: TagsCollectionView?
+    weak var delelgat: ReloadTable?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -31,8 +32,6 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         setupSubjectLabel()
         setupReplayCountLabel()
         setupTitleLabel()
-        setupTagLabels()
-        setupAcceptMark()
         setupConstraints()
     }
     
@@ -77,11 +76,6 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         titleLabel.backgroundColor = .clear
     }
     
-    private func setupTagLabels() {
-        tagsView?.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(tagsView ?? UIView())
-    }
-    
     private func setupAcceptMark() {
         hasAcceptedAnswrMark.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(hasAcceptedAnswrMark)
@@ -90,6 +84,13 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         hasAcceptedAnswrMark.backgroundColor = .clear
         hasAcceptedAnswrMark.clipsToBounds = true
         hasAcceptedAnswrMark.contentMode = .scaleAspectFit
+        
+        NSLayoutConstraint.activate([
+            hasAcceptedAnswrMark.topAnchor.constraint(equalTo: replayCountLabel.bottomAnchor, constant: 15),
+            hasAcceptedAnswrMark.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+            hasAcceptedAnswrMark.widthAnchor.constraint(equalToConstant: 26),
+            hasAcceptedAnswrMark.heightAnchor.constraint(equalToConstant: 26),
+        ])
     }
     
     private func setupConstraints() {
@@ -102,6 +103,7 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
             subjectLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
             subjectLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
             subjectLabel.heightAnchor.constraint(equalToConstant: 18),
+            subjectLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -65),
             
             replayCountLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
             replayCountLabel.centerYAnchor.constraint(equalTo: subjectLabel.centerYAnchor),
@@ -110,25 +112,33 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
             titleLabel.topAnchor.constraint(equalTo: subjectLabel.bottomAnchor),
             titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
             titleLabel.heightAnchor.constraint(equalToConstant: 20),
-            titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 210),
-            
-            hasAcceptedAnswrMark.topAnchor.constraint(equalTo: replayCountLabel.bottomAnchor, constant: 15),
-            hasAcceptedAnswrMark.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
-            hasAcceptedAnswrMark.widthAnchor.constraint(equalToConstant: 26),
-            hasAcceptedAnswrMark.heightAnchor.constraint(equalToConstant: 26),
-            
-//            tagsView!.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-//            tagsView!.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-//            tagsView!.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -60),
-//            tagsView!.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
+            titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -45),
         ])
     }
     
     func configure(with question: Question) {
         titleLabel.text = question.title
         replayCountLabel.text = "replies: \(question.answersCount)"
-        subjectLabel.text = question.title
-        tagsView = TagsCollectionView(tags: question.tags)
+        subjectLabel.text = question.content
+        
+        if let _ = question.acceptedAnswer {
+            setupAcceptMark()
+        }
+        
+        guard let delegate = delelgat else { return }
+        tagsView = TagsCollectionView(tags: question.tags, delegate: delegate)
+        guard let tagsView else { return }
+        
+        tagsView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(tagsView)
+        
+        NSLayoutConstraint.activate([
+            tagsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            tagsView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
+            tagsView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -60),
+            tagsView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
+        ])
+        
         layoutIfNeeded()
     }
 }

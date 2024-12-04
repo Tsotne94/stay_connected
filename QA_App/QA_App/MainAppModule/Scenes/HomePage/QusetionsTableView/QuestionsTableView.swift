@@ -13,24 +13,35 @@ protocol ReloadTable: AnyObject {
 
 class QuestionsTableView: UIView {
     private let searchBar = UISearchBar()
-    private let tagsCollection: TagsCollectionView?
     private let table = UITableView()
     
     private let noQuestionsLabel = UILabel()
     private let beFirstLabel = UILabel()
     private let backImage = UIImageView()
     private var viewModel: QuestionProtocol?
+    private var tagsCollection: TagsCollectionView?
+    
+//    init(viewModel: QuestionProtocol) {
+//        self.viewModel = viewModel
+//        self.tagsCollection = TagsCollectionView(tags: viewModel.tags())
+//        super.init(frame: .zero)
+//        setupView()
+//        
+//        if let homePageViewModel = viewModel as? HomePageViewModel {
+//            homePageViewModel.delegate = self
+//        }
+//    }
     
     init(viewModel: QuestionProtocol) {
-        self.viewModel = viewModel
-        self.tagsCollection = TagsCollectionView(tags: viewModel.tags())
-        super.init(frame: .zero)
-        setupView()
-        
-        if let homePageViewModel = viewModel as? HomePageViewModel {
-            homePageViewModel.delegate = self
+            self.viewModel = viewModel
+            super.init(frame: .zero) // Initialize superclass first
+            self.tagsCollection = TagsCollectionView(tags: viewModel.tags(), delegate: self) // Initialize tagsCollection after super.init
+            setupView()
+            
+            if let homePageViewModel = viewModel as? HomePageViewModel {
+                homePageViewModel.delegate = self
+            }
         }
-    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -152,6 +163,7 @@ extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: QuestionsTableViewCell.reuseIdentifier, for: indexPath) as! QuestionsTableViewCell
         guard let question = viewModel?.singleQuestion(at: indexPath.row) else { return cell }
+        cell.delelgat = self
         cell.configure(with: question)
         return cell
     }
