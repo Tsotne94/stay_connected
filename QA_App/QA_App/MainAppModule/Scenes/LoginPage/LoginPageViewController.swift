@@ -202,15 +202,29 @@ final class LoginPageViewController: UIViewController {
         
         viewModel.logIn(user: user) { result in
             switch result {
-            case .success(let success):
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
+            case .success(_):
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { [weak self] in
                     let vc = HomePageViewController()
                     self?.navigationController?.pushViewController(vc, animated: true)
                 })
-            case .failure(let failure):
+            case .failure(_):
+                DispatchQueue.main.async {
+                    self.loginFail()
+                }
                 print("failed to log in")
             }
         }
+    }
+    
+    private func loginFail() {
+        showAlert(title: "Unable To Log In", message: "Incorrect Username or Password")
+        usernameTextField.text = ""
+        passwordTextField.text = ""
+        usernameTextField.layer.borderColor = UIColor.red.cgColor
+        passwordTextField.layer.borderColor = UIColor.red.cgColor
+        
+        usernameTextField.shake()
+        passwordTextField.shake()
     }
     
     private func setupConstraints() {
