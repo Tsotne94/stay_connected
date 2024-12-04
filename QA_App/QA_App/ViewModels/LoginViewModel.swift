@@ -62,8 +62,9 @@ class LoginViewModel {
         let refreshTokenKey = "com.tbcAcademy.stayConnected.refreshToken"
         let service = "stayConnected"
         
+        KeyChainManager.deleteAllKeychainItems()
         
-        try KeyChainManager.delete(service: service, account: accessTokenKey)
+//        try KeyChainManager.delete(service: service, account: accessTokenKey)
 
 //        let existingAccessToken = KeyChainManager.get(service: service, account: accessTokenKey)
         

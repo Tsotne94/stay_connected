@@ -58,26 +58,19 @@ class KeyChainManager {
         return result as? Data
     }
     
-    static func delete(
-        service: String,
-        account: String
-    ) throws {
-        let query: [String: AnyObject] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service as AnyObject,
-            kSecAttrAccount as String: account as AnyObject
+    static func deleteAllKeychainItems() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword
         ]
         
-        let status = SecItemDelete(query as CFDictionary)
+        SecItemDelete(query as CFDictionary)
+        let allClasses: [CFString] = [kSecClassGenericPassword, kSecClassInternetPassword, kSecClassKey, kSecClassCertificate]
         
-        guard status == errSecSuccess else {
-            if status == errSecItemNotFound {
-                throw KeyChainError.unknown(status)
-            } else {
-                throw KeyChainError.unknown(status)
-            }
+        for keyClass in allClasses {
+            let deleteQuery: [String: Any] = [kSecClass as String: keyClass]
+            SecItemDelete(deleteQuery as CFDictionary)
         }
         
-        print("deleted")
+        print("All Keychain items cleared.")
     }
 }
