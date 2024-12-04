@@ -9,10 +9,15 @@ import UIKit
 
 class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     private var collectionView: UICollectionView?
-    private let tags = ["cool", "ios", "macos", "ai", "stack", "uikit", "swiftui"]
+    private var tags: [Tag]?
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollection()
+    }
+    
+    init(tags: [Tag]) {
+        super.init(frame: .zero)
+        self.tags = tags
     }
     
     required init?(coder: NSCoder) {
@@ -48,12 +53,13 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        tags.count
+        tags?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagsCollectionViewCell.reuseIdentifier, for: indexPath) as! TagsCollectionViewCell
-        cell.configureCell(wiht: tags[indexPath.item])
+        guard let tag = tags?[indexPath.item].name else { return cell }
+        cell.configureCell(wiht: tag)
         return cell
     }
 }

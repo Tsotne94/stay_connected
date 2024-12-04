@@ -61,15 +61,18 @@ class LoginViewModel {
         let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
         let refreshTokenKey = "com.tbcAcademy.stayConnected.refreshToken"
         let service = "stayConnected"
-
-        let existingAccessToken = KeyChainManager.get(service: service, account: accessTokenKey)
         
-        if existingAccessToken?.isEmpty == true {
+        
+        try KeyChainManager.delete(service: service, account: accessTokenKey)
+
+//        let existingAccessToken = KeyChainManager.get(service: service, account: accessTokenKey)
+        
+//        if existingAccessToken?.isEmpty == true {
             try KeyChainManager.save(service: service, account: accessTokenKey, token: accessToken)
             try KeyChainManager.save(service: service, account: refreshTokenKey, token: refreshToken)
-            print("Tokens saved successfully.")
-        } else {
-            print("Tokens already exist.")
-        }
+//            print("Tokens saved successfully.")
+//        } else {
+//            print("Tokens already exist.")
+//        }
     }
 }

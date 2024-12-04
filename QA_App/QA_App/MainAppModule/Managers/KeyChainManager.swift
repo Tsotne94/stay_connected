@@ -53,6 +53,31 @@ class KeyChainManager {
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         
+        print(status)
+        
         return result as? Data
+    }
+    
+    static func delete(
+        service: String,
+        account: String
+    ) throws {
+        let query: [String: AnyObject] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service as AnyObject,
+            kSecAttrAccount as String: account as AnyObject
+        ]
+        
+        let status = SecItemDelete(query as CFDictionary)
+        
+        guard status == errSecSuccess else {
+            if status == errSecItemNotFound {
+                throw KeyChainError.unknown(status)
+            } else {
+                throw KeyChainError.unknown(status)
+            }
+        }
+        
+        print("deleted")
     }
 }

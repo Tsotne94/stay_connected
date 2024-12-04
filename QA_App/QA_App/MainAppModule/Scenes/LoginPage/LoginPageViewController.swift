@@ -184,16 +184,22 @@ final class LoginPageViewController: UIViewController {
     
     @objc private func loginButtonTapped() {
         guard usernameTextField.text != "", usernameTextField.text != nil, usernameTextField.text?.isEmail() == true else {
+            usernameTextField.layer.borderColor = UIColor.red.cgColor
+            usernameTextField.shake()
             showAlert(title: "Incorrect Username Address", message: "Please Enter Valid Username")
             return
         }
         
         guard passwordTextField.text != "", passwordTextField.text != nil else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
             showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
             return
         }
         
         guard passwordTextField.text!.count >= 8 else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
             showAlert(title: "Incorrect Password", message: "Please Enter Valid Password")
             return
         }
@@ -218,8 +224,6 @@ final class LoginPageViewController: UIViewController {
     
     private func loginFail() {
         showAlert(title: "Unable To Log In", message: "Incorrect Username or Password")
-        usernameTextField.text = ""
-        passwordTextField.text = ""
         usernameTextField.layer.borderColor = UIColor.red.cgColor
         passwordTextField.layer.borderColor = UIColor.red.cgColor
         

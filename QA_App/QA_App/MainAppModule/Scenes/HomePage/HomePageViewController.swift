@@ -13,8 +13,18 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
     private let addQuestionButton = UIButton()
     private let generalButton = UIButton()
     private let personalButton = UIButton()
-    private let questionsTableView = QuestionsTableView()
-
+    private let viewModel = HomePageViewModel()
+    private var questionsTableView: QuestionsTableView?
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        questionsTableView = QuestionsTableView(viewModel: viewModel)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -89,10 +99,10 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
     
     
     private func setupQuestionsTableView() {
-        questionsTableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(questionsTableView)
+        questionsTableView?.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(questionsTableView ?? UIView())
         
-        questionsTableView.backgroundColor = .clear
+        questionsTableView?.backgroundColor = .clear
     }
     
     private func configureButton(_ button: UIButton, title: String, color: UIColor) {
@@ -125,10 +135,10 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
             personalButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.45),
             personalButton.heightAnchor.constraint(equalTo: personalButton.widthAnchor, multiplier: 0.22),
             
-            questionsTableView.topAnchor.constraint(equalTo: personalButton.bottomAnchor, constant: 20),
-            questionsTableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            questionsTableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            questionsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            questionsTableView!.topAnchor.constraint(equalTo: personalButton.bottomAnchor, constant: 20),
+            questionsTableView!.leftAnchor.constraint(equalTo: view.leftAnchor),
+            questionsTableView!.rightAnchor.constraint(equalTo: view.rightAnchor),
+            questionsTableView!.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             
         ])
     }

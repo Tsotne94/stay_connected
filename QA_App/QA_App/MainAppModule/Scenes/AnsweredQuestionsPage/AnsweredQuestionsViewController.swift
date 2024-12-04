@@ -10,7 +10,7 @@ import UIKit
 class AnsweredQuestionsViewController: UIViewController {
     private let backButton = UIButton()
     private let titleLabel = UILabel()
-    private let questionTableView = QuestionsTableView()
+    private let questionTableView = QuestionsTableView(viewModel: HomePageViewModel())
     
     override func viewDidLoad() {
         super.viewDidLoad()
