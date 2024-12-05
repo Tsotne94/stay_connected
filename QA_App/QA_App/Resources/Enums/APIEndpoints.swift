@@ -11,5 +11,5 @@ enum APIEndpoints: String {
     case qusetion = "http://52.203.162.247:8001/api/questions/"
     case refresh = "http://52.203.162.247:8001/api/user/login/refresh/"
     case profile = "http://52.203.162.247:8001/api/user/profile/"
-    case ownQuestions = "http://52.203.162.247:8001/api/user/profile/owned_questions/"
+    case personal = "http://52.203.162.247:8001/api/user/profile/owned_questions/"
 }

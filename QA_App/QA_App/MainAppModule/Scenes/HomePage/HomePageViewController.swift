@@ -79,6 +79,7 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
             generalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted) ?? UIColor()
             personalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButton) ?? UIColor()
             general = true
+            viewModel.fetchQuestions()
         }
     }
     
@@ -94,6 +95,7 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
             personalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted) ?? UIColor()
             generalButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButton) ?? UIColor()
             general = false
+            viewModel.fetchPersonalQuestions()
         }
     }
     

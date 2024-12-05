@@ -90,6 +90,25 @@ class HomePageViewModel: QuestionProtocol {
             })
     }
     
+    func fetchPersonalQuestions() {
+        let token = getToken()
+        networkManager.fetchData(
+            from: APIEndpoints.personal.rawValue,
+            modelType: Response.self,
+            bearerToken: token,
+            completion: { [weak self] result in
+                switch result {
+                case .success(let questions):
+                    self?.response = questions
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reloadTable()
+                    }
+                case .failure(let error):
+                    print("Failed to fetch questions: \(error.localizedDescription)")
+                }
+            })
+    }
+    
     private func getToken() -> String {
         let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
         let service = "stayConnected"
