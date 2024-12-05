@@ -58,11 +58,13 @@ class QuestionsTableView: UIView {
         
         searchBar.placeholder = "Search"
         searchBar.backgroundImage = UIImage()
+        searchBar.delegate = self
     }
     
     private func setupTags() {
         tagsCollection?.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tagsCollection ?? UIView())
+        tagsCollection?.delegate = viewModel as? HomePageViewModel
     }
     
     private func setupTableView() {
@@ -168,6 +170,14 @@ extension QuestionsTableView: ReloadTable {
     func reload() {
         DispatchQueue.main.async { [weak self] in
             self!.tagsCollection?.updateTags(self?.viewModel?.tags() ?? [])
+        }
+    }
+}
+
+extension QuestionsTableView: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let homePageViewModel = viewModel as? HomePageViewModel {
+            homePageViewModel.fetchQuestions(tag: nil, search: searchText)
         }
     }
 }

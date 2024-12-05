@@ -22,6 +22,8 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         return collectionView
     }()
     
+    weak var delegate: HomePageViewModel?
+    
     private var tags: [Tag] = []
 
     init() {
@@ -49,6 +51,10 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         ])
     }
     
+    func disableUserInteraction() {
+        collectionView.isUserInteractionEnabled = false
+    }
+    
     func updateTags(_ newTags: [Tag]) {
         self.tags = newTags
         collectionView.reloadData()
@@ -63,6 +69,13 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         let tag = tags[indexPath.item]
         cell.configureCell(with: tag)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagsCollectionViewCell.reuseIdentifier, for: indexPath) as! TagsCollectionViewCell
+        let tag = tags[indexPath.item]
+        delegate?.fetchQuestions(tag: tag.name)
+        cell.cellPressed(with: tag)
     }
 }
 

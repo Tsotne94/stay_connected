@@ -18,6 +18,8 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
         button.clipsToBounds = true
         return button
     }()
+    
+    var pressed = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,6 +37,7 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
     
     private func setupTagButton() {
         contentView.addSubview(tagButton)
+        tagButton.isUserInteractionEnabled = false
         
         NSLayoutConstraint.activate([
             tagButton.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -47,6 +50,13 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
     
     func configureCell(with tag: Tag) {
         tagButton.setTitle("   \(tag.name)   ", for: .normal)        
+        layoutIfNeeded()
+    }
+    
+    func cellPressed(with: Tag) {
+        tagButton.setTitleColor(.white, for: .normal)
+        tagButton.setTitle(with.name, for: .normal)
+        tagButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
         layoutIfNeeded()
     }
 }

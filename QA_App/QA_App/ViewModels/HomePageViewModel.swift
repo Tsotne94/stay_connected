@@ -15,7 +15,7 @@ class HomePageViewModel: QuestionProtocol {
     var questionsChange: (() -> Void)?
     
     let networkManager: NetworkPackage
-
+    
     init(networkManager: NetworkPackage = NetworkPackage()) {
         self.networkManager = networkManager
         fetchQuestions()
@@ -38,25 +38,6 @@ class HomePageViewModel: QuestionProtocol {
         response.results[at]
     }
     
-    private func fetchQuestions() {
-        let token = getToken()
-        networkManager.fetchData(
-            from: APIEndpoints.qusetion.rawValue,
-            modelType: Response.self,
-            bearerToken: token,
-            completion: { [weak self] result in
-                switch result {
-                case .success(let questions):
-                    self?.response = questions
-                    DispatchQueue.main.async { [weak self] in
-                        self?.delegate?.reloadTable()
-                    }
-                case .failure(let error):
-                    print("failde to fetch questions for home page" + "\(error.localizedDescription)")
-                }
-            })
-    }
-    
     private func fetchTags() {
         let token = getToken()
         print(token)
@@ -75,7 +56,40 @@ class HomePageViewModel: QuestionProtocol {
                 }
             }
     }
-
+    
+    func fetchQuestions(tag: String? = nil, search: String? = nil) {
+        let token = getToken()
+        
+        var urlComponents = URLComponents(string: APIEndpoints.qusetion.rawValue)!
+        var queryItems = [URLQueryItem]()
+        
+        if let tag = tag {
+            queryItems.append(URLQueryItem(name: "tags__name", value: tag))
+        }
+        
+        if let search = search {
+            queryItems.append(URLQueryItem(name: "search", value: search))
+        }
+        
+        urlComponents.queryItems = queryItems.isEmpty ? nil : queryItems
+        
+        networkManager.fetchData(
+            from: urlComponents.url!.absoluteString,
+            modelType: Response.self,
+            bearerToken: token,
+            completion: { [weak self] result in
+                switch result {
+                case .success(let questions):
+                    self?.response = questions
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reloadTable()
+                    }
+                case .failure(let error):
+                    print("Failed to fetch questions: \(error.localizedDescription)")
+                }
+            })
+    }
+    
     private func getToken() -> String {
         let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
         let service = "stayConnected"

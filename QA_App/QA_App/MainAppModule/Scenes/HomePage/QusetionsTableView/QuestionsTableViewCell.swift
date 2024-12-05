@@ -90,6 +90,8 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         tagsView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(tagsView)
         
+        tagsView.disableUserInteraction()
+        
         NSLayoutConstraint.activate([
             tagsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
             tagsView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
