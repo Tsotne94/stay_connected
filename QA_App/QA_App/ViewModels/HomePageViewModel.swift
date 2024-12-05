@@ -10,7 +10,7 @@ import MyNetworkManager
 
 class HomePageViewModel: QuestionProtocol {
     private var response = Response(count: 0, next: nil, previous: nil, results: [Question]())
-    private var tagsArr = [Tag]()
+    private var tagsArr = TagsResponse(count: 0, next: nil, previous: nil, results: [])
     weak var delegate: ReloadTable?
     var questionsChange: (() -> Void)?
     
@@ -27,7 +27,7 @@ class HomePageViewModel: QuestionProtocol {
     }
     
     func tags() -> [Tag] {
-        return tagsArr
+        return tagsArr.results
     }
     
     var questionQount: Int {
@@ -49,7 +49,7 @@ class HomePageViewModel: QuestionProtocol {
                 case .success(let questions):
                     self?.response = questions
                     DispatchQueue.main.async { [weak self] in
-                        self?.delegate?.reload()
+                        self?.delegate?.reloadTable()
                     }
                 case .failure(let error):
                     print("failde to fetch questions for home page" + "\(error.localizedDescription)")
@@ -62,11 +62,14 @@ class HomePageViewModel: QuestionProtocol {
         print(token)
         networkManager.fetchData(
             from: APIEndpoints.allTags.rawValue,
-            modelType: [Tag].self,
-            bearerToken: token) { (result: Result<[Tag], Error>) in
+            modelType: TagsResponse.self,
+            bearerToken: token) { [weak self] result in
                 switch result {
                 case .success(let fetchedTags):
-                    self.tagsArr = fetchedTags
+                    self?.tagsArr = fetchedTags
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
                 case .failure(let error):
                     print("Error fetching tags: \(error)")
                 }

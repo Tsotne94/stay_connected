@@ -37,3 +37,10 @@ struct Response: Codable {
     let previous: String?
     let results: [Question]
 }
+
+struct TagsResponse: Codable {
+    let count: Int
+    let next: String?
+    let previous: String?
+    let results: [Tag]
+}

@@ -8,6 +8,7 @@
 import UIKit
 
 protocol ReloadTable: AnyObject {
+    func reloadTable()
     func reload()
 }
 
@@ -158,9 +159,15 @@ extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension QuestionsTableView: ReloadTable {
+    func reloadTable() {
+        DispatchQueue.main.async { [weak self] in
+            self?.table.reloadData()
+        }
+    }
+    
     func reload() {
-        DispatchQueue.main.async {
-            self.table.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self!.tagsCollection?.updateTags(self?.viewModel?.tags() ?? [])
         }
     }
 }
