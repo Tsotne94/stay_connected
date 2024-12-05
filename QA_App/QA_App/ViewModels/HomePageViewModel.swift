@@ -9,8 +9,8 @@ import UIKit
 import MyNetworkManager
 
 class HomePageViewModel: QuestionProtocol {
-    private static var response = Response(count: 0, next: nil, previous: nil, results: [Question]())
-    private static var tagsArr = [Tag]()
+    private var response = Response(count: 0, next: nil, previous: nil, results: [Question]())
+    private var tagsArr = [Tag]()
     weak var delegate: ReloadTable?
     var questionsChange: (() -> Void)?
     
@@ -23,19 +23,19 @@ class HomePageViewModel: QuestionProtocol {
     }
     
     func asnwerCount(for index: Int) -> Int {
-        Int(HomePageViewModel.response.results[index].answersCount)
+        Int(response.results[index].answersCount)
     }
     
     func tags() -> [Tag] {
-        return HomePageViewModel.tagsArr
+        return tagsArr
     }
     
     var questionQount: Int {
-        HomePageViewModel.response.count
+        response.count
     }
     
     func singleQuestion(at: Int) -> Question {
-        HomePageViewModel.response.results[at]
+        response.results[at]
     }
     
     private func fetchQuestions() {
@@ -44,10 +44,10 @@ class HomePageViewModel: QuestionProtocol {
             from: APIEndpoints.qusetion.rawValue,
             modelType: Response.self,
             bearerToken: token,
-            completion: { result in
+            completion: { [weak self] result in
                 switch result {
                 case .success(let questions):
-                    HomePageViewModel.response = questions
+                    self?.response = questions
                     DispatchQueue.main.async { [weak self] in
                         self?.delegate?.reload()
                     }
@@ -66,7 +66,7 @@ class HomePageViewModel: QuestionProtocol {
             bearerToken: token) { (result: Result<[Tag], Error>) in
                 switch result {
                 case .success(let fetchedTags):
-                    HomePageViewModel.tagsArr = fetchedTags
+                    self.tagsArr = fetchedTags
                 case .failure(let error):
                     print("Error fetching tags: \(error)")
                 }

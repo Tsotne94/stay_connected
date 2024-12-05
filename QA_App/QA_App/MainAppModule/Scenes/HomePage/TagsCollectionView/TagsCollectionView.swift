@@ -6,46 +6,34 @@
 //
 
 import UIKit
+import Foundation
 
 class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
-    private var collectionView: UICollectionView?
-    private var tags: [Tag]?
+    private var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.estimatedItemSize = CGSize(width: 5, height: 50)
+        layout.minimumLineSpacing = 10
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .clear
+        
+        return collectionView
+    }()
     
-    weak var delegate: ReloadTable?
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private var tags: [Tag] = []
+
+    init() {
+        super.init(frame: .zero)
         setupCollection()
     }
-    
-//    init(tags: [Tag]) {
-//        super.init(frame: .zero)
-//        self.tags = tags
-//    }
-    init(tags: [Tag], delegate: ReloadTable?) { // Accept delegate in the initializer
-            super.init(frame: .zero)
-            self.tags = tags
-            self.delegate = delegate // Assign the delegate
-            setupCollection()
-        }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private func setupCollection() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = UICollectionViewFlowLayout.automaticSize
-        layout.estimatedItemSize = CGSize(width: 50, height: 50)
-        layout.minimumLineSpacing = 10
-        
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        guard let collectionView = collectionView else { return }
-        
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .clear
-        
         collectionView.register(TagsCollectionViewCell.self, forCellWithReuseIdentifier: TagsCollectionViewCell.reuseIdentifier)
         
         collectionView.dataSource = self
@@ -61,15 +49,25 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         ])
     }
     
+    func updateTags(_ newTags: [Tag]) {
+        self.tags = newTags
+        collectionView.reloadData()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        tags?.count ?? 0
+        tags.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagsCollectionViewCell.reuseIdentifier, for: indexPath) as! TagsCollectionViewCell
-        guard let tag = tags?[indexPath.item].name else { return cell }
-        cell.delegate = delegate
+        let tag = tags[indexPath.item]
         cell.configureCell(with: tag)
         return cell
+    }
+}
+
+extension TagsCollectionView: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return .init(width: 10 , height: 24)
     }
 }

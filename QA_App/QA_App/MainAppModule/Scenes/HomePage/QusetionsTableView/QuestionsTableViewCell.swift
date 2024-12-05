@@ -11,12 +11,10 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
     private let subjectLabel = UILabel()
     private let replayCountLabel = UILabel()
     private let titleLabel = UILabel()
-    private let tagLabels = [UILabel]()
-    private let hasAcceptedAnswrMark = UIImageView()
+    private let hasAcceptedAnswerMark = UIImageView()
     private let containerView = UIView()
-    private var tagsView: TagsCollectionView?
-    weak var delelgat: ReloadTable?
-    
+    private var tagsView = TagsCollectionView()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCellUI()
@@ -28,14 +26,16 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
     
     private func setupCellUI() {
         contentView.backgroundColor = .background
-        setupCpnteinerView()
+        setupContainerView()
         setupSubjectLabel()
         setupReplayCountLabel()
         setupTitleLabel()
+        setupAcceptedMark()
+        setupCollectionView()
         setupConstraints()
     }
     
-    private func setupCpnteinerView() {
+    private func setupContainerView() {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
         
@@ -76,20 +76,25 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         titleLabel.backgroundColor = .clear
     }
     
-    private func setupAcceptMark() {
-        hasAcceptedAnswrMark.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(hasAcceptedAnswrMark)
+    private func setupAcceptedMark() {
+        hasAcceptedAnswerMark.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(hasAcceptedAnswerMark)
         
-        hasAcceptedAnswrMark.image = UIImage(named: AppAssets.Icons.checkMark)
-        hasAcceptedAnswrMark.backgroundColor = .clear
-        hasAcceptedAnswrMark.clipsToBounds = true
-        hasAcceptedAnswrMark.contentMode = .scaleAspectFit
+        hasAcceptedAnswerMark.image = UIImage(named: AppAssets.Icons.checkMark)
+        hasAcceptedAnswerMark.backgroundColor = .clear
+        hasAcceptedAnswerMark.clipsToBounds = true
+        hasAcceptedAnswerMark.contentMode = .scaleAspectFit
+    }
+    
+    private func setupCollectionView() {
+        tagsView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(tagsView)
         
         NSLayoutConstraint.activate([
-            hasAcceptedAnswrMark.topAnchor.constraint(equalTo: replayCountLabel.bottomAnchor, constant: 15),
-            hasAcceptedAnswrMark.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
-            hasAcceptedAnswrMark.widthAnchor.constraint(equalToConstant: 26),
-            hasAcceptedAnswrMark.heightAnchor.constraint(equalToConstant: 26),
+            tagsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            tagsView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
+            tagsView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+            tagsView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
         ])
     }
     
@@ -113,6 +118,11 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
             titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
             titleLabel.heightAnchor.constraint(equalToConstant: 20),
             titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -45),
+            
+            hasAcceptedAnswerMark.topAnchor.constraint(equalTo: replayCountLabel.bottomAnchor, constant: 15),
+            hasAcceptedAnswerMark.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+            hasAcceptedAnswerMark.widthAnchor.constraint(equalToConstant: 26),
+            hasAcceptedAnswerMark.heightAnchor.constraint(equalToConstant: 26)
         ])
     }
     
@@ -121,24 +131,10 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         replayCountLabel.text = "replies: \(question.answersCount)"
         subjectLabel.text = question.content
         
-        if let _ = question.acceptedAnswer {
-            setupAcceptMark()
+        if question.acceptedAnswer == nil {
+            hasAcceptedAnswerMark.isHidden = true
         }
         
-        guard let delegate = delelgat else { return }
-        tagsView = TagsCollectionView(tags: question.tags, delegate: delegate)
-        guard let tagsView else { return }
-        
-        tagsView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(tagsView)
-        
-        NSLayoutConstraint.activate([
-            tagsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            tagsView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-            tagsView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -60),
-            tagsView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
-        ])
-        
-        layoutIfNeeded()
+        tagsView.updateTags(question.tags)
     }
 }
