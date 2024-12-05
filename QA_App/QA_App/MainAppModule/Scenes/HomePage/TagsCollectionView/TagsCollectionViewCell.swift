@@ -59,5 +59,11 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
         tagButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
         layoutIfNeeded()
     }
+    
+    func returnToInitialState() {
+        tagButton.backgroundColor = UIColor(named: AppAssets.Colors.tagBackground)
+        tagButton.setTitleColor(UIColor(named: AppAssets.Colors.tagText), for: .normal)
+        layoutIfNeeded()
+    }
 }
 

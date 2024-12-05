@@ -24,6 +24,7 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     
     weak var delegate: HomePageViewModel?
     
+    private var pressedTag: [Int] = []
     private var tags: [Tag] = []
 
     init() {
@@ -51,6 +52,15 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         ])
     }
     
+    func resetAllCellsToInitialState() {
+        for visibleCell in collectionView.visibleCells {
+            if let tagCell = visibleCell as? TagsCollectionViewCell {
+                tagCell.returnToInitialState()
+            }
+        }
+        pressedTag.removeAll()
+    }
+    
     func disableUserInteraction() {
         collectionView.isUserInteractionEnabled = false
     }
@@ -72,10 +82,24 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagsCollectionViewCell.reuseIdentifier, for: indexPath) as! TagsCollectionViewCell
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TagsCollectionViewCell else { return }
         let tag = tags[indexPath.item]
-        delegate?.fetchQuestions(tag: tag.name)
-        cell.cellPressed(with: tag)
+        
+        for index in pressedTag {
+            if let previousCell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? TagsCollectionViewCell {
+                previousCell.returnToInitialState()
+            }
+        }
+        
+        if pressedTag.contains(indexPath.item) {
+            delegate?.fetchQuestions()
+            pressedTag.removeAll { $0 == indexPath.item }
+            cell.returnToInitialState()
+        } else {
+            delegate?.fetchQuestions(tag: tag.name)
+            cell.cellPressed(with: tag)
+            pressedTag = [indexPath.item]
+        }
     }
 }
 

@@ -178,6 +178,7 @@ extension QuestionsTableView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let homePageViewModel = viewModel as? HomePageViewModel {
             homePageViewModel.fetchQuestions(tag: nil, search: searchText)
+            tagsCollection?.resetAllCellsToInitialState()
         }
     }
 }
