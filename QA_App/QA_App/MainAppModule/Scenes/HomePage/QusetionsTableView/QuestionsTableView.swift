@@ -177,8 +177,12 @@ extension QuestionsTableView: ReloadTable {
 extension QuestionsTableView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let homePageViewModel = viewModel as? HomePageViewModel {
-            homePageViewModel.fetchQuestions(tag: nil, search: searchText)
-            tagsCollection?.resetAllCellsToInitialState()
+            guard let tagId = tagsCollection?.pressedTag else {
+                homePageViewModel.fetchQuestions(tag: nil, search: searchText)
+                return
+            }
+            let tagName = tagsCollection?.tags[tagId].name
+            homePageViewModel.fetchQuestions(tag: tagName, search: searchText)
         }
     }
 }

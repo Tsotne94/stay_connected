@@ -24,8 +24,8 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     
     weak var delegate: HomePageViewModel?
     
-    private var pressedTag: [Int] = []
-    private var tags: [Tag] = []
+    private(set) var pressedTag: Int?
+    private(set) var tags: [Tag] = []
 
     init() {
         super.init(frame: .zero)
@@ -52,15 +52,6 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         ])
     }
     
-    func resetAllCellsToInitialState() {
-        for visibleCell in collectionView.visibleCells {
-            if let tagCell = visibleCell as? TagsCollectionViewCell {
-                tagCell.returnToInitialState()
-            }
-        }
-        pressedTag.removeAll()
-    }
-    
     func disableUserInteraction() {
         collectionView.isUserInteractionEnabled = false
     }
@@ -85,20 +76,20 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         guard let cell = collectionView.cellForItem(at: indexPath) as? TagsCollectionViewCell else { return }
         let tag = tags[indexPath.item]
         
-        for index in pressedTag {
-            if let previousCell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? TagsCollectionViewCell {
-                previousCell.returnToInitialState()
-            }
+        
+        if let pressedTag, let previousCell = collectionView.cellForItem(at: IndexPath(item: pressedTag, section: 0)) as? TagsCollectionViewCell {
+            previousCell.returnToInitialState()
+            
         }
         
-        if pressedTag.contains(indexPath.item) {
+        if let pressedTag {
             delegate?.fetchQuestions()
-            pressedTag.removeAll { $0 == indexPath.item }
+            self.pressedTag = nil
             cell.returnToInitialState()
         } else {
             delegate?.fetchQuestions(tag: tag.name)
             cell.cellPressed(with: tag)
-            pressedTag = [indexPath.item]
+            pressedTag = indexPath.item
         }
     }
 }

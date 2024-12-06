@@ -210,7 +210,7 @@ final class LoginPageViewController: UIViewController {
             switch result {
             case .success(_):
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { [weak self] in
-                    self?.navigateToFeed()
+                    self?.navigateToHomePage()
                 })
             case .failure(_):
                 DispatchQueue.main.async {
@@ -221,10 +221,10 @@ final class LoginPageViewController: UIViewController {
         }
     }
     
-    private func navigateToFeed() {
-            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-            sceneDelegate?.window?.rootViewController = TabBarController()
-        }
+    private func navigateToHomePage() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.window?.rootViewController = TabBarController()
+    }
     
     private func loginFail() {
         showAlert(title: "Unable To Log In", message: "Incorrect Username or Password")

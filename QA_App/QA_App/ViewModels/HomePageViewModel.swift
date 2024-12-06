@@ -84,8 +84,10 @@ class HomePageViewModel: QuestionProtocol {
                     DispatchQueue.main.async { [weak self] in
                         self?.delegate?.reloadTable()
                     }
-                case .failure(let error):
-                    print("Failed to fetch questions: \(error.localizedDescription)")
+                case .failure(_):
+                    DispatchQueue.main.async {
+                        self?.navigateToHomePage()
+                    }
                 }
             })
     }
@@ -123,5 +125,10 @@ class HomePageViewModel: QuestionProtocol {
         } else {
             return ""
         }
+    }
+    
+    private func navigateToHomePage() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.window?.rootViewController = LoginPageViewController()
     }
 }
