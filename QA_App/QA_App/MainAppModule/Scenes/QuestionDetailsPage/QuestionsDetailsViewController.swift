@@ -17,11 +17,11 @@ class QuestionsDetailsViewController: UIViewController {
     private let titleLabel = UILabel()
     private let publisherLabel = UILabel()
     private let answersTableView = UITableView()
-    private var answerTextField = UITextField()
+    private var answerTextView = UITextView()
     private let answerButton = UIButton()
     private var question: Question?
     private var viewModel: QuestionDetailsViewModel?
-    
+    private let placeholderLabel = UILabel()
     init(question: Question) {
         super.init(nibName: nil, bundle: nil)
         viewModel = QuestionDetailsViewModel(id: question.id)
@@ -48,7 +48,31 @@ class QuestionsDetailsViewController: UIViewController {
         setupAnswersTableView()
         setupAnswerTextField()
         setupConstraints()
+        setupSendButton()
+        setupPlaceholder()
     }
+    
+    private func setupPlaceholder() {
+        placeholderLabel.text = "Type your answer here"
+        placeholderLabel.textColor = .lightGray
+        placeholderLabel.font = .systemFont(ofSize: 15, weight: .regular)
+        placeholderLabel.isUserInteractionEnabled = false
+        
+        answerTextView.addSubview(placeholderLabel)
+        
+        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            placeholderLabel.topAnchor.constraint(equalTo: answerTextView.topAnchor, constant: 8),
+            placeholderLabel.leftAnchor.constraint(equalTo: answerTextView.leftAnchor, constant: 10)
+        ])
+        
+        updatePlaceholderVisibility()
+    }
+    private func updatePlaceholderVisibility() {
+        placeholderLabel.isHidden = !answerTextView.text.isEmpty
+    }
+    
+    
 
     private func setupBackButton() {
         backButton.translatesAutoresizingMaskIntoConstraints = false
@@ -109,20 +133,23 @@ class QuestionsDetailsViewController: UIViewController {
     }
     
     private func setupAnswerTextField() {
-        answerTextField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(answerTextField)
-        
-        answerTextField.placeholder = "Type your reply here"
-        answerTextField.layer.borderWidth = 1
-        answerTextField.layer.borderColor = UIColor(named: AppAssets.Colors.tabTitle)?.cgColor
-        answerTextField.layer.cornerRadius = 12
-        answerTextField.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        answerTextView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(answerTextView)
+        answerTextView.delegate = self
+        answerTextView.layer.borderWidth = 1
+        answerTextView.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        answerTextView.layer.borderColor = UIColor(named: AppAssets.Colors.tabTitle)?.cgColor
+        answerTextView.layer.cornerRadius = 12
+        answerTextView.textColor = .lightGray
+        answerTextView.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        answerTextView.textContainerInset = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 35)
+        answerTextView.textContainer.lineFragmentPadding = 0
 
-        setupPadding(for: answerTextField)
+
     }
     
     @objc private func answerTapped() {
-        guard let answerText = answerTextField.text, !answerText.isEmpty, answerText.count > 15 else {
+        guard let answerText = answerTextView.text, !answerText.isEmpty, answerText.count > 15 else {
             showAlert(title: "Replay has to be longer that 15 characters", message: "Replay is too short")
             return
         }
@@ -134,26 +161,28 @@ class QuestionsDetailsViewController: UIViewController {
             self.answersTableView.reloadData()
             self.view.layoutIfNeeded()
         }
-        answerTextField.text = ""
+        answerTextView.text = ""
     }
     
-    private func setupPadding(for textField: UITextField) {
-        let rightPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 35, height: 40))
-        
+    
+    private func setupSendButton() {
         answerButton.setImage(UIImage(named: AppAssets.Icons.sendMessage), for: .normal)
         answerButton.tintColor = .gray
-        answerButton.frame = CGRect(x: 0, y: (rightPaddingView.bounds.height - 25) / 2, width: 30, height: 25)
-        rightPaddingView.addSubview(answerButton)
-        
-        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 40))
-        
-        textField.rightView = rightPaddingView
-        textField.rightViewMode = .always
-        textField.leftView = leftPaddingView
-        textField.leftViewMode = .always
+        answerButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(answerButton)
         
         answerButton.addTarget(self, action: #selector(answerTapped), for: .touchUpInside)
+        
+        NSLayoutConstraint.activate([
+            answerButton.centerYAnchor.constraint(equalTo: answerTextView.centerYAnchor),
+            answerButton.rightAnchor.constraint(equalTo: answerTextView.rightAnchor, constant: -10),
+            answerButton.heightAnchor.constraint(equalToConstant: 30),
+            answerButton.widthAnchor.constraint(equalToConstant: 30)
+        ])
+        
+        answerTextView.textContainerInset = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 45)
     }
+    
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
@@ -171,14 +200,14 @@ class QuestionsDetailsViewController: UIViewController {
             publisherLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15),
             publisherLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -15),
             
-            answerTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
-            answerTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-            answerTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
+            answerTextView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
+            answerTextView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
+            answerTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             
             answersTableView.topAnchor.constraint(equalTo: publisherLabel.bottomAnchor, constant: 20),
             answersTableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
             answersTableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-            answersTableView.bottomAnchor.constraint(equalTo: answerTextField.topAnchor, constant: -10),
+            answersTableView.bottomAnchor.constraint(equalTo: answerTextView.topAnchor, constant: -10),
         ])
     }
 }
@@ -203,7 +232,7 @@ extension QuestionsDetailsViewController: UITableViewDataSource, UITableViewDele
 extension QuestionsDetailsViewController: ReloadTable {
     func reload() {
         showAlert(title: "You can not replay to your own Questions", message: "Adding answer is not possible")
-        answerTextField.text = ""
+        answerTextView.text = ""
         view.layoutIfNeeded()
     }
     
@@ -211,4 +240,14 @@ extension QuestionsDetailsViewController: ReloadTable {
         answersTableView.reloadData()
     }
 }
+
+
+extension QuestionsDetailsViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        answerTextView.adjustHeight()
+        updatePlaceholderVisibility()
+    }
+}
+
+
 

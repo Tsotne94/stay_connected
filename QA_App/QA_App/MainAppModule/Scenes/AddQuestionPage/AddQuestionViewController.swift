@@ -308,19 +308,8 @@ class AddQuestionViewController: UIViewController {
 
 extension AddQuestionViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
+        questionTextField.adjustHeight()
         updatePlaceholderVisibility()
-        let size = CGSize(width: textView.frame.width, height: .infinity)
-        let estimatedSize = textView.sizeThatFits(size)
-        if estimatedSize.height != textView.frame.height {
-            UIView.animate(withDuration: 0.2) {
-                self.questionTextField.constraints.forEach { constraint in
-                    if constraint.firstAttribute == .height {
-                        constraint.constant = estimatedSize.height
-                        self.view.layoutIfNeeded()
-                    }
-                }
-            }
-        }
     }
 }
 
