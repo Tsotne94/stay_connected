@@ -14,7 +14,7 @@ struct Tag: Codable {
 
 struct Question: Codable {
     let id: Int
-    let author: String
+    let author: Author
     let title: String
     let content: String
     let acceptedAnswer: String?
@@ -30,7 +30,16 @@ struct Question: Codable {
         case tags
     }
 }
-
+ 
+struct Author: Codable {
+    var fullName: String
+    var imageUrl: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case fullName = "full_name"
+        case imageUrl = "profile_picture"
+    }
+}
 struct Response: Codable {
     let count: Int
     let next: String?

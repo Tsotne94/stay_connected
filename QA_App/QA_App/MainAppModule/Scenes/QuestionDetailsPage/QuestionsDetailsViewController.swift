@@ -94,7 +94,7 @@ class QuestionsDetailsViewController: UIViewController {
         publisherLabel.font = .systemFont(ofSize: 13, weight: .regular)
         publisherLabel.textColor = UIColor(named: AppAssets.Colors.tabTitle)
         publisherLabel.textAlignment = .left
-        publisherLabel.text = question?.author
+        publisherLabel.text = question?.author.fullName
         
     }
     
