@@ -94,7 +94,7 @@ class QuestionsDetailsViewController: UIViewController {
         publisherLabel.font = .systemFont(ofSize: 13, weight: .regular)
         publisherLabel.textColor = UIColor(named: AppAssets.Colors.tabTitle)
         publisherLabel.textAlignment = .left
-        publisherLabel.text = question?.author
+        publisherLabel.text = question?.author.fullName
         
     }
     
@@ -177,6 +177,7 @@ class QuestionsDetailsViewController: UIViewController {
             self.answersTablevIew.reloadData()
             self.view.layoutIfNeeded()
         })
+        answerTextField.text = ""
     }
     
     private func setupPadding(for searchBar: UITextField) {
@@ -227,7 +228,7 @@ extension QuestionsDetailsViewController: UITableViewDataSource, UITableViewDele
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AnswersTableViewCell.reuseIdentifier, for: indexPath) as! AnswersTableViewCell
         guard let answer = viewModel?.singleAnswer(at: indexPath.row) else { return cell }
-        cell.configure(with: answer)
+        cell.configure(answer: answer)
         return cell
     }
 }

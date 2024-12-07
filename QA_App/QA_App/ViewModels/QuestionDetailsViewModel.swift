@@ -21,10 +21,6 @@ class QuestionDetailsViewModel {
         fetchAnswers(for: questionID!)
     }
     
-    func addAnswer() {
-        
-    }
-    
     private func fetchAnswers(for id: Int) {
         let token = getToken()
         
@@ -85,5 +81,9 @@ class QuestionDetailsViewModel {
     
     func singleAnswer(at index: Int) -> Answer? {
         detailedQuestion?.answers[index]
+    }
+    
+    func acceptedAnswer() -> Answer? {
+        detailedQuestion?.acceptedAnswer
     }
 }

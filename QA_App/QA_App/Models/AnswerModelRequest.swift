@@ -11,33 +11,17 @@ struct AnswerModelRequest: Codable {
     var content: String
 }
 
-struct Answer: Codable {
-    let id: Int
-    let author: String
-    let content: String
-    let createdAt: String
-    let likesCount: Int
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case author
-        case content
-        case createdAt = "created_at"
-        case likesCount = "likes_count"
-    }
-}
-
 struct DetailedQuestion: Codable {
     let id: Int
-    let author: String
+    let author: Author
     let title: String
     let content: String
     let tags: [Tag]
     let createdAt: String
-    let updatedAt: String?
-    let acceptedAnswer: Answer?
-    let answers: [Answer]
-
+    let updatedAt: String
+    var acceptedAnswer: Answer?
+    var answers: [Answer]
+    
     enum CodingKeys: String, CodingKey {
         case id
         case author
@@ -50,3 +34,22 @@ struct DetailedQuestion: Codable {
         case answers
     }
 }
+
+struct Answer: Codable {
+    let id: Int
+    let author: Author
+    let content: String
+    let createdAt: String
+    let updatedAt: String
+    let likesCount: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case author
+        case content
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case likesCount = "likes_count"
+    }
+}
+
