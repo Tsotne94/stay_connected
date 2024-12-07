@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol UpdateQuestions: AnyObject {
+    func update()
+}
+
 class AddQuestionViewController: UIViewController {
     private let titleLabel = UILabel()
     private let titleContainerView = UIView()
@@ -27,6 +31,8 @@ class AddQuestionViewController: UIViewController {
     private let questionTextField = UITextView()
     private let questionButton = UIButton()
     private let placeholderLabel = UILabel()
+    weak var delegate: UpdateQuestions?
+    
   
     private var selectedTagsItems: [Tag] = []
 
@@ -36,6 +42,11 @@ class AddQuestionViewController: UIViewController {
         viewmodel?.delegate = self
         allTags.delegate = self
         setupUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        delegate?.update()
     }
     
     private func setupUI() {
@@ -234,6 +245,10 @@ class AddQuestionViewController: UIViewController {
         guard let title = subjectTextField.text else { return }
         guard let content = questionTextField.text else { return }
         let tags = selectedTagsItems.map({ $0.id })
+        guard tags.isEmpty == false else {
+            showAlert(title: "No Tags Were Selected", message: "You Must Select At Least One Tag")
+            return
+        }
         let question = AddQuestionModel(title: title, content: content, tags: tags)
 
         viewmodel?.addQuestion(question: question)

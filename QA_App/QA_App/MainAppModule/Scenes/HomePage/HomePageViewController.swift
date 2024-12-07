@@ -65,6 +65,7 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
     
     @objc private func addQuestionButtonTapped() {
         let vc = AddQuestionViewController()
+        vc.delegate = self
         self.present(vc, animated: true, completion: nil)
     }
     
@@ -150,5 +151,11 @@ extension HomePageViewController: QuestionsTableViewDelegate {
     func didSelectQuestion(question: Question) {
         let vc = QuestionsDetailsViewController(question: question)
         navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+extension HomePageViewController: UpdateQuestions {
+    func update() {
+        viewModel.fetchQuestions()
     }
 }
