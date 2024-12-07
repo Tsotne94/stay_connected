@@ -30,11 +30,12 @@ class HomePageViewModel: QuestionProtocol {
     }
     
     var questionQount: Int {
-        response.count
+        response.results.count
     }
     
     func singleQuestion(at: Int) -> Question {
-        response.results[at]
+        print("\(at)/n/n/nn/n/n//n/n/n/nn/n/n/nn/n/n/")
+        return response.results[at]
     }
     
     private func fetchTags() {

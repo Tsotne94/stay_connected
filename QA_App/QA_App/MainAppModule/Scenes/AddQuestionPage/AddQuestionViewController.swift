@@ -249,12 +249,11 @@ extension AddQuestionViewController: UITextFieldDelegate {
 
 extension AddQuestionViewController: AddQUestion {
     func success() {
-        print("✅ Success method called")
         showAlert(title: "Question Added Successfully", message: "Question Was Added")
-        subjectTextField.text = ""
-        questionTextField.text = ""
-        selectedTagsItems.removeAll()
-        view.layoutIfNeeded()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+            self.dismiss(animated: true)
+            self.dismiss(animated: true)
+        })
     }
     
     func reload() {

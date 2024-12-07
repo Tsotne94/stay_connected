@@ -82,4 +82,8 @@ class QuestionDetailsViewModel {
     func singleAnswer(at index: Int) -> Answer? {
         detailedQuestion?.answers[index]
     }
+    
+    func acceptedAnswer() -> Answer? {
+        detailedQuestion?.acceptedAnswer
+    }
 }

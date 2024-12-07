@@ -15,7 +15,7 @@ class SignUpViewModel {
     func signUp(user: RegisterRequest, completion: @escaping (Result<String, Error>) -> Void) {
         networkManager.postData(
             to: APIEndpoints.signUp.rawValue,
-            modelType: RegisterRequest.self,
+            modelType: RegisterResponse.self,
             requestBody: user,
             completion: { result in
                 switch result {
