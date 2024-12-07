@@ -30,7 +30,7 @@ struct Question: Codable {
         case tags
     }
 }
- 
+
 struct Author: Codable {
     var fullName: String
     var imageUrl: String?
@@ -40,6 +40,7 @@ struct Author: Codable {
         case imageUrl = "profile_picture"
     }
 }
+
 struct Response: Codable {
     let count: Int
     let next: String?

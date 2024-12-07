@@ -30,11 +30,12 @@ class HomePageViewModel: QuestionProtocol {
     }
     
     var questionQount: Int {
-        response.count
+        response.results.count
     }
     
     func singleQuestion(at: Int) -> Question {
-        response.results[at]
+        print("\(at)/n/n/nn/n/n//n/n/n/nn/n/n/nn/n/n/")
+        return response.results[at]
     }
     
     private func fetchTags() {
@@ -57,8 +58,6 @@ class HomePageViewModel: QuestionProtocol {
     }
     
     func fetchQuestions(tag: String? = nil, search: String? = nil) {
-        let token = getToken()
-        
         var urlComponents = URLComponents(string: APIEndpoints.qusetion.rawValue)!
         var queryItems = [URLQueryItem]()
         
@@ -75,7 +74,6 @@ class HomePageViewModel: QuestionProtocol {
         networkManager.fetchData(
             from: urlComponents.url!.absoluteString,
             modelType: Response.self,
-            bearerToken: token,
             completion: { [weak self] result in
                 switch result {
                 case .success(let questions):

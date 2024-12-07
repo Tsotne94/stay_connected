@@ -177,14 +177,17 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 2 {
+            KeyChainManager.deleteAllKeychainItems()
             navigateToLoginPage()
+
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+
     private func navigateToLoginPage() {
-        let loginPageViewController = LoginPageViewController()
-        navigationController?.pushViewController(loginPageViewController, animated: true)
-    }
+            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+            sceneDelegate?.window?.rootViewController = UINavigationController(rootViewController: LoginPageViewController())
+        }
     
 }

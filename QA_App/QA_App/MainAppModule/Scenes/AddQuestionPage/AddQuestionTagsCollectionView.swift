@@ -1,15 +1,19 @@
 //
-//  TagsCollectionView.swift
+//  Untitled.swift
 //  QA_App
 //
-//  Created by Cotne Chubinidze on 30.11.24.
+//  Created by Cotne Chubinidze on 07.12.24.
 //
-
 import UIKit
-import Foundation
 
-class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
-    private var selectable = true
+protocol AddQuestionTagsCollectionDelegate: AnyObject {
+    func didSelectTag(_ tag: Tag)
+    func removeTag(_ tag: Tag)
+}
+
+class AddQuestionTagsCollection: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
+    weak var delegate: AddQuestionTagsCollectionDelegate?
+    
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -23,11 +27,9 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         return collectionView
     }()
     
-    weak var delegate: QuestionProtocol?
-    
     private var pressedTag: [Int] = []
     private var tags: [Tag] = []
-
+    
     init() {
         super.init(frame: .zero)
         setupCollection()
@@ -60,7 +62,7 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     }
     
     func disableUserInteraction() {
-        selectable = false
+        collectionView.isUserInteractionEnabled = false
     }
     
     func updateTags(_ newTags: [Tag]) {
@@ -80,30 +82,17 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard selectable == true else { return }
         guard let cell = collectionView.cellForItem(at: indexPath) as? TagsCollectionViewCell else { return }
         let tag = tags[indexPath.item]
         
-        for index in pressedTag {
-            if let previousCell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? TagsCollectionViewCell {
-                previousCell.returnToInitialState()
-            }
-        }
-        
         if pressedTag.contains(indexPath.item) {
-            delegate?.fetchQuestions(tag: nil, search: nil)
             pressedTag.removeAll { $0 == indexPath.item }
             cell.returnToInitialState()
+            delegate?.removeTag(tag)
         } else {
-            delegate?.fetchQuestions(tag: tag.name, search: nil)
             cell.cellPressed(with: tag)
-            pressedTag = [indexPath.item]
+            pressedTag.append(indexPath.item)
+            delegate?.didSelectTag(tag)
         }
-    }
-}
-
-extension TagsCollectionView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: 10 , height: 24)
     }
 }

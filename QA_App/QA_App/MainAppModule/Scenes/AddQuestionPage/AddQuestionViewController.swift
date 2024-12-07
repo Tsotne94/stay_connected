@@ -21,15 +21,20 @@ class AddQuestionViewController: UIViewController {
     private let tagLabel = UILabel()
     private let selectedTags = TagsCollectionView()
     
-    private let allTags = TagsCollectionView()
+    private let allTags = AddQuestionTagsCollection()
+    private var viewmodel: AddQuestionViewModel?
     
     private let questionTextField = UITextView()
     private let questionButton = UIButton()
     private let placeholderLabel = UILabel()
+  
+    private var selectedTagsItems: [Tag] = []
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.viewmodel = AddQuestionViewModel()
+        viewmodel?.delegate = self
+        allTags.delegate = self
         setupUI()
     }
     
@@ -132,6 +137,7 @@ class AddQuestionViewController: UIViewController {
         tagLabel.font = .systemFont(ofSize: 15, weight: .regular)
         
         selectedTags.translatesAutoresizingMaskIntoConstraints = false
+        selectedTags.disableUserInteraction()
         tagContainer.addSubview(selectedTags)
     }
     
@@ -225,7 +231,12 @@ class AddQuestionViewController: UIViewController {
     
    
     @objc private func sendPressed() {
-        print("send Pressed")
+        guard let title = subjectTextField.text else { return }
+        guard let content = questionTextField.text else { return }
+        let tags = selectedTagsItems.map({ $0.id })
+        let question = AddQuestionModel(title: title, content: content, tags: tags)
+
+        viewmodel?.addQuestion(question: question)
     }
     
     private func setupConstraints() {
@@ -301,7 +312,29 @@ extension AddQuestionViewController: UITextViewDelegate {
         }
     }
 }
-#Preview {
-    AddQuestionViewController()
+
+extension AddQuestionViewController: AddQUestion {
+    func success() {
+        showAlert(title: "Question Added Successfully", message: "Question Was Added")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+            self.dismiss(animated: true)
+            self.dismiss(animated: true)
+        })
+    }
     
+    func reload() {
+        allTags.updateTags(viewmodel?.tags() ?? [])
+    }
+}
+
+extension AddQuestionViewController: AddQuestionTagsCollectionDelegate {
+    func removeTag(_ tag: Tag) {
+        selectedTagsItems.removeAll(where: { $0.name == tag.name })
+        selectedTags.updateTags(selectedTagsItems)
+    }
+    
+    func didSelectTag(_ tag: Tag) {
+        selectedTagsItems.append(tag)
+        selectedTags.updateTags(selectedTagsItems)
+    }
 }
