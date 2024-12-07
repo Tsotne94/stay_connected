@@ -79,7 +79,10 @@ class QuestionDetailsViewModel {
     }
     
     var replayCount: Int {
-        detailedQuestion?.answers.count ?? 0
+        if (detailedQuestion?.acceptedAnswer) != nil {
+            return (detailedQuestion?.answers.count ?? 0) + 1
+        }
+        return detailedQuestion?.answers.count ?? 0
     }
     
     func singleAnswer(at index: Int) -> Answer? {

@@ -9,11 +9,10 @@ import UIKit
 import MyDateFormatter
 
 class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
-    private let profileImageView = UIImageView()
+    let profileImageView = UIImageView()
     private let nameLabel = UILabel()
     private let dateLabel = UILabel()
     private let answerLabel = UILabel()
-    private let moreButton = UIButton()
     private let acceptedBadge = UIImageView()
     private let dateFormatter = MyDateFormatter()
 
@@ -32,8 +31,6 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         setupNameLabel()
         setupDateLabel()
         setupAnswerLabel()
-        setupMoreButton()
-        setupAcceptedBagde()
         setupConstraints()
     }
     
@@ -77,11 +74,6 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         answerLabel.font = .systemFont(ofSize: 15, weight: .regular)
     }
     
-    
-    private func setupMoreButton() {
-        
-    }
-    
     private func setupAcceptedBagde() {
         acceptedBadge.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(acceptedBadge)
@@ -89,6 +81,11 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         acceptedBadge.clipsToBounds = true
         acceptedBadge.contentMode = .scaleAspectFit
         acceptedBadge.image = UIImage(named: AppAssets.Icons.badgeAccepted)
+        
+        NSLayoutConstraint.activate([
+            acceptedBadge.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
+            acceptedBadge.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -5)
+        ])
     }
     
     private func setupConstraints() {
@@ -108,9 +105,6 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
             answerLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 5),
             answerLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -5),
             answerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            
-            acceptedBadge.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            acceptedBadge.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -5)
         ])
     }
     
@@ -118,6 +112,14 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         nameLabel.text = answer.author.fullName
         dateLabel.text = dateFormatter.format(answer.createdAt)
         answerLabel.text = answer.content
+        layoutIfNeeded()
+    }
+    
+    func setupAccepted(answer: Answer) {
+        nameLabel.text = answer.author.fullName
+        dateLabel.text = dateFormatter.format(answer.createdAt)
+        answerLabel.text = answer.content
+        setupAnswerLabel()
         layoutIfNeeded()
     }
 }
