@@ -15,9 +15,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(windowScene: scene)
-        window?.rootViewController = AddQuestionViewController()
-        window?.makeKeyAndVisible()
+        let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
+        let refreshTokenKey = "com.tbcAcademy.stayConnected.refreshToken"
+        let service = "stayConnected"
+        
+        if let key = KeyChainManager.get(service: service, account: refreshTokenKey) {
+            window = UIWindow(windowScene: scene)
+            window?.rootViewController = TabBarController()
+            window?.makeKeyAndVisible()
+        } else {
+            window = UIWindow(windowScene: scene)
+            let navigationController = UINavigationController(rootViewController: LoginPageViewController())
+            window?.rootViewController = navigationController
+            window?.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

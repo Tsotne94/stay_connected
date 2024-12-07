@@ -4,12 +4,23 @@
 //
 //  Created by Cotne Chubinidze on 30.11.24.
 //
+//
 
 import UIKit
 
 class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
-    let tagButton = UIButton()
+    let tagButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = UIColor(named: AppAssets.Colors.tagBackground)
+        button.setTitleColor(UIColor(named: AppAssets.Colors.tagText), for: .normal)
+        button.layer.cornerRadius = 12
+        button.clipsToBounds = true
+        return button
+    }()
     
+    var pressed = false
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -25,14 +36,8 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
     }
     
     private func setupTagButton() {
-        tagButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(tagButton)
-    
-        tagButton.backgroundColor = UIColor(named: AppAssets.Colors.tagBackground)
-        tagButton.setTitleColor(UIColor(named: AppAssets.Colors.tagText), for: .normal)
-        
-        tagButton.layer.cornerRadius = 12
-        tagButton.clipsToBounds = true
+        tagButton.isUserInteractionEnabled = false
         
         NSLayoutConstraint.activate([
             tagButton.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -43,7 +48,22 @@ class TagsCollectionViewCell: UICollectionViewCell, IdentifiableProtocol {
         ])
     }
     
-    func configureCell(wiht tag: String) {
-        tagButton.setTitle("   \(tag)   ", for: .normal)
+    func configureCell(with tag: Tag) {
+        tagButton.setTitle("   \(tag.name)   ", for: .normal)        
+        layoutIfNeeded()
+    }
+    
+    func cellPressed(with: Tag) {
+        tagButton.setTitleColor(.white, for: .normal)
+        tagButton.setTitle(with.name, for: .normal)
+        tagButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
+        layoutIfNeeded()
+    }
+    
+    func returnToInitialState() {
+        tagButton.backgroundColor = UIColor(named: AppAssets.Colors.tagBackground)
+        tagButton.setTitleColor(UIColor(named: AppAssets.Colors.tagText), for: .normal)
+        layoutIfNeeded()
     }
 }
+

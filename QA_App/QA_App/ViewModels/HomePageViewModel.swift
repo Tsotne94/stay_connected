@@ -1,0 +1,134 @@
+//
+//  HomePageViewModel.swift
+//  QA_App
+//
+//  Created by Cotne Chubinidze on 04.12.24.
+//
+import Foundation
+import UIKit
+import MyNetworkManager
+
+class HomePageViewModel: QuestionProtocol {
+    private var response = Response(count: 0, next: nil, previous: nil, results: [Question]())
+    private var tagsArr = TagsResponse(count: 0, next: nil, previous: nil, results: [])
+    weak var delegate: ReloadTable?
+    var questionsChange: (() -> Void)?
+    
+    let networkManager: NetworkPackage
+    
+    init(networkManager: NetworkPackage = NetworkPackage()) {
+        self.networkManager = networkManager
+        fetchQuestions()
+        fetchTags()
+    }
+    
+    func asnwerCount(for index: Int) -> Int {
+        Int(response.results[index].answersCount)
+    }
+    
+    func tags() -> [Tag] {
+        return tagsArr.results
+    }
+    
+    var questionQount: Int {
+        response.count
+    }
+    
+    func singleQuestion(at: Int) -> Question {
+        response.results[at]
+    }
+    
+    private func fetchTags() {
+        let token = getToken()
+        print(token)
+        networkManager.fetchData(
+            from: APIEndpoints.allTags.rawValue,
+            modelType: TagsResponse.self,
+            bearerToken: token) { [weak self] result in
+                switch result {
+                case .success(let fetchedTags):
+                    self?.tagsArr = fetchedTags
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
+                case .failure(let error):
+                    print("Error fetching tags: \(error)")
+                }
+            }
+    }
+    
+    func fetchQuestions(tag: String? = nil, search: String? = nil) {
+        let token = getToken()
+        
+        var urlComponents = URLComponents(string: APIEndpoints.qusetion.rawValue)!
+        var queryItems = [URLQueryItem]()
+        
+        if let tag = tag {
+            queryItems.append(URLQueryItem(name: "tags__name", value: tag))
+        }
+        
+        if let search = search {
+            queryItems.append(URLQueryItem(name: "search", value: search))
+        }
+        
+        urlComponents.queryItems = queryItems.isEmpty ? nil : queryItems
+        
+        networkManager.fetchData(
+            from: urlComponents.url!.absoluteString,
+            modelType: Response.self,
+            bearerToken: token,
+            completion: { [weak self] result in
+                switch result {
+                case .success(let questions):
+                    self?.response = questions
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reloadTable()
+                    }
+                case .failure(_):
+                    DispatchQueue.main.async {
+                        self?.navigateToHomePage()
+                    }
+                }
+            })
+    }
+    
+    func fetchPersonalQuestions() {
+        let token = getToken()
+        networkManager.fetchData(
+            from: APIEndpoints.personal.rawValue,
+            modelType: Response.self,
+            bearerToken: token,
+            completion: { [weak self] result in
+                switch result {
+                case .success(let questions):
+                    self?.response = questions
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reloadTable()
+                    }
+                case .failure(let error):
+                    print("Failed to fetch questions: \(error.localizedDescription)")
+                }
+            })
+    }
+    
+    private func getToken() -> String {
+        let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
+        let service = "stayConnected"
+        
+        let result = KeyChainManager.get(service: service, account: accessTokenKey) ?? Data()
+        return decodeToken(data: result)
+    }
+    
+    private func decodeToken(data: Data) -> String {
+        if let token = String(data: data, encoding: .utf8) {
+            return token
+        } else {
+            return ""
+        }
+    }
+    
+    private func navigateToHomePage() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.window?.rootViewController = LoginPageViewController()
+    }
+}

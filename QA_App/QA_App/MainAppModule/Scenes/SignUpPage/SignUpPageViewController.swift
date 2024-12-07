@@ -5,6 +5,7 @@
 //  Created by Cotne Chubinidze on 30.11.24.
 //
 import UIKit
+import Combine
 
 class SignUpPageViewController: UIViewController {
     private let titleLabel = UILabel()
@@ -17,6 +18,9 @@ class SignUpPageViewController: UIViewController {
     private let confirmPasswordLabel = UILabel()
     private let confirmPasswordTextfield = UITextField()
     private let signUpButton = UIButton()
+    private let backButton = UIButton()
+    
+    private let viewModel = SignUpViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +28,9 @@ class SignUpPageViewController: UIViewController {
     }
     
     private func setupUI() {
+        navigationController?.isNavigationBarHidden = true
         view.backgroundColor = UIColor(named: AppAssets.Colors.background)
+        setupBackButton()
         setupTitleLabel()
         setupFullNameLabel()
         setupNameTextField()
@@ -36,6 +42,21 @@ class SignUpPageViewController: UIViewController {
         setupConfirmPasswordTextField()
         setupSignUpButton()
         setupConstraints()
+    }
+    
+    private func setupBackButton() {
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backButton)
+        
+        backButton.backgroundColor = .clear
+        backButton.setTitle("", for: .normal)
+        backButton.setImage(UIImage(named: AppAssets.Icons.back), for: .normal)
+        
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+    }
+    
+    @objc private func backTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupTitleLabel() {
@@ -147,10 +168,81 @@ class SignUpPageViewController: UIViewController {
         signUpButton.titleLabel?.font = .systemFont(ofSize: 16)
         signUpButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
         signUpButton.layer.cornerRadius = 15
+        
+        signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
+    }
+    
+    @objc private func signUpTapped() {
+        
+        guard nameTextField.text != "", nameTextField.text != nil else {
+            nameTextField.layer.borderColor = UIColor.red.cgColor
+            nameTextField.shake()
+            showAlert(title: "Incorrect Username!", message: "Please Enter Valid Username")
+            return
+        }
+        
+        guard usernameTextField.text != "", usernameTextField.text != nil, usernameTextField.text?.isEmail() == true else {
+            usernameTextField.layer.borderColor = UIColor.red.cgColor
+            usernameTextField.shake()
+            showAlert(title: "Incorrect Email Address", message: "Please Enter Valid Email")
+            return
+        }
+        
+        guard passwordTextField.text != "", passwordTextField.text != nil else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
+            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard passwordTextField.text!.count >= 8 else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
+            showAlert(title: "Password Field Can't be less than 8 caracters", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard confirmPasswordTextfield.text != "", confirmPasswordTextfield.text != nil else {
+            confirmPasswordTextfield.layer.borderColor = UIColor.red.cgColor
+            confirmPasswordTextfield.shake()
+            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard confirmPasswordTextfield.text == passwordTextField.text else {
+            confirmPasswordTextfield.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            confirmPasswordTextfield.shake()
+            passwordTextField.shake()
+            showAlert(title: "Password Should Match", message: "Please Enter Valid Password")
+            return
+        }
+        
+        let user = RegisterRequest(
+            email: usernameTextField.text!,
+            fullName: nameTextField.text!,
+            password: passwordTextField.text!,
+            confirmPassword: confirmPasswordTextfield.text!
+        )
+        
+        viewModel.signUp(user: user) { result in
+            switch result {
+            case .success(_):
+                self.navigationController?.popViewController(animated: true)
+                if self.navigationController == nil {
+                    print("No navigation controller present.")
+                }
+            case .failure(let error):
+                print("faliure", "\(error.localizedDescription)")
+            }
+        }
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            backButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 14),
+            
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
             titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             titleLabel.heightAnchor.constraint(equalToConstant: 50),

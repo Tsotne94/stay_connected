@@ -8,19 +8,13 @@
 import UIKit
 
 class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
-    private let subject = "Swift Operators"
-    private let titleText = "How to implement the code"
-    private let replayCount = "5"
-    private let tags = ["IOS", "Backend", "Frontend"]
-    
     private let subjectLabel = UILabel()
-    private let replayCountLbel = UILabel()
+    private let replayCountLabel = UILabel()
     private let titleLabel = UILabel()
-    private let tagLabels = [UILabel]()
-    private let hasAcceptedAnswrMark = UIImageView()
+    private let hasAcceptedAnswerMark = UIImageView()
     private let containerView = UIView()
-    private let tagsView = TagsCollectionView()
-    
+    private var tagsView = TagsCollectionView()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCellUI()
@@ -32,16 +26,16 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
     
     private func setupCellUI() {
         contentView.backgroundColor = .background
-        setupCpnteinerView()
+        setupContainerView()
         setupSubjectLabel()
         setupReplayCountLabel()
         setupTitleLabel()
-        setupTagLabels()
-        setupAcceptMark()
+        setupAcceptedMark()
+        setupCollectionView()
         setupConstraints()
     }
     
-    private func setupCpnteinerView() {
+    private func setupContainerView() {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
         
@@ -54,7 +48,6 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         subjectLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(subjectLabel)
         
-        subjectLabel.text = subject
         subjectLabel.font = .systemFont(ofSize: 13, weight: .medium)
         subjectLabel.textColor = UIColor(named: AppAssets.Colors.replayColor)
         subjectLabel.backgroundColor = .clear
@@ -63,41 +56,48 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
     }
     
     private func setupReplayCountLabel() {
-        replayCountLbel.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(replayCountLbel)
+        replayCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(replayCountLabel)
         
-        replayCountLbel.text = "replies: " + replayCount
-        replayCountLbel.font = .systemFont(ofSize: 11, weight: .light)
-        replayCountLbel.textColor = UIColor(named: AppAssets.Colors.replayColor)
-        replayCountLbel.textAlignment = .right
-        replayCountLbel.backgroundColor = .clear
-        replayCountLbel.numberOfLines = 1
+        replayCountLabel.font = .systemFont(ofSize: 11, weight: .light)
+        replayCountLabel.textColor = UIColor(named: AppAssets.Colors.replayColor)
+        replayCountLabel.textAlignment = .right
+        replayCountLabel.backgroundColor = .clear
+        replayCountLabel.numberOfLines = 1
     }
     
     private func setupTitleLabel() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(titleLabel)
         
-        titleLabel.text = titleText
         titleLabel.font = .systemFont(ofSize: 15, weight: .regular)
         titleLabel.textColor = UIColor(named: AppAssets.Colors.bodyText)
         titleLabel.textAlignment = .left
         titleLabel.backgroundColor = .clear
     }
     
-    private func setupTagLabels() {
-        tagsView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(tagsView)
+    private func setupAcceptedMark() {
+        hasAcceptedAnswerMark.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(hasAcceptedAnswerMark)
+        
+        hasAcceptedAnswerMark.image = UIImage(named: AppAssets.Icons.checkMark)
+        hasAcceptedAnswerMark.backgroundColor = .clear
+        hasAcceptedAnswerMark.clipsToBounds = true
+        hasAcceptedAnswerMark.contentMode = .scaleAspectFit
     }
     
-    private func setupAcceptMark() {
-        hasAcceptedAnswrMark.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(hasAcceptedAnswrMark)
+    private func setupCollectionView() {
+        tagsView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(tagsView)
         
-        hasAcceptedAnswrMark.image = UIImage(named: AppAssets.Icons.checkMark)
-        hasAcceptedAnswrMark.backgroundColor = .clear
-        hasAcceptedAnswrMark.clipsToBounds = true
-        hasAcceptedAnswrMark.contentMode = .scaleAspectFit
+        tagsView.disableUserInteraction()
+        
+        NSLayoutConstraint.activate([
+            tagsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            tagsView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
+            tagsView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+            tagsView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
+        ])
     }
     
     private func setupConstraints() {
@@ -110,25 +110,33 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
             subjectLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
             subjectLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
             subjectLabel.heightAnchor.constraint(equalToConstant: 18),
+            subjectLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -65),
             
-            replayCountLbel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
-            replayCountLbel.centerYAnchor.constraint(equalTo: subjectLabel.centerYAnchor),
-            replayCountLbel.widthAnchor.constraint(lessThanOrEqualToConstant: 80),
+            replayCountLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+            replayCountLabel.centerYAnchor.constraint(equalTo: subjectLabel.centerYAnchor),
+            replayCountLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 80),
             
             titleLabel.topAnchor.constraint(equalTo: subjectLabel.bottomAnchor),
             titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
             titleLabel.heightAnchor.constraint(equalToConstant: 20),
-            titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 210),
+            titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -45),
             
-            hasAcceptedAnswrMark.topAnchor.constraint(equalTo: replayCountLbel.bottomAnchor, constant: 15),
-            hasAcceptedAnswrMark.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
-            hasAcceptedAnswrMark.widthAnchor.constraint(equalToConstant: 26),
-            hasAcceptedAnswrMark.heightAnchor.constraint(equalToConstant: 26),
-            
-            tagsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            tagsView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-            tagsView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -60),
-            tagsView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
+            hasAcceptedAnswerMark.topAnchor.constraint(equalTo: replayCountLabel.bottomAnchor, constant: 15),
+            hasAcceptedAnswerMark.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+            hasAcceptedAnswerMark.widthAnchor.constraint(equalToConstant: 26),
+            hasAcceptedAnswerMark.heightAnchor.constraint(equalToConstant: 26)
         ])
+    }
+    
+    func configure(with question: Question) {
+        titleLabel.text = question.title
+        replayCountLabel.text = "replies: \(question.answersCount)"
+        subjectLabel.text = question.content
+        
+        if question.acceptedAnswer == nil {
+            hasAcceptedAnswerMark.isHidden = true
+        }
+        
+        tagsView.updateTags(question.tags)
     }
 }

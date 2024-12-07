@@ -16,7 +16,10 @@ final class LoginPageViewController: UIViewController {
     private let passwordTextField = UITextField()
     private let newToButton = UIButton()
     private let signUpButton = UIButton()
-    private let LoginButton = UIButton()
+    private let loginButton = UIButton()
+    private let privacyButton = UIButton()
+    
+    private let viewModel = LoginViewModel()
     
 
     override func viewDidLoad() {
@@ -106,13 +109,18 @@ final class LoginPageViewController: UIViewController {
         leftPaddingView.addSubview(leftImageView)
         
         let rightImage = UIImage(named: AppAssets.Icons.hiddenEye)
-        let rightPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: passwordTextField.frame.height))
+        privacyButton.setImage(rightImage, for: .normal)
+        privacyButton.contentMode = .scaleAspectFit
+        privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchUpInside)
         
-        let rightImageView = UIImageView(image: rightImage)
-        rightImageView.contentMode = .scaleAspectFit
-        rightImageView.frame = CGRect(x: -10, y: -8, width: 16, height: 16)
         
-        rightPaddingView.addSubview(rightImageView)
+        let rightPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 35, height: 40))
+                    
+        privacyButton.frame = CGRect(x: 0, y: (rightPaddingView.bounds.height - 25) / 2, width: 30, height: 25)
+        privacyButton.clipsToBounds = true
+
+        
+        rightPaddingView.addSubview(privacyButton)
         
         passwordTextField.leftView = leftPaddingView
         passwordTextField.rightView = rightPaddingView
@@ -124,6 +132,13 @@ final class LoginPageViewController: UIViewController {
         passwordTextField.layer.borderWidth = 1
         passwordTextField.layer.borderColor = UIColor(named: AppAssets.Colors.tabTitle)?.cgColor
         passwordTextField.layer.cornerRadius = 12
+    }
+    
+    @objc private func privacyButtonTapped() {
+        passwordTextField.isSecureTextEntry.toggle()
+        passwordTextField.layoutIfNeeded()
+        print("pressed")
+        
     }
     
     private func setupNewToButton() {
@@ -144,25 +159,88 @@ final class LoginPageViewController: UIViewController {
         signUpButton.setTitle("Sign Up", for: .normal)
         signUpButton.titleLabel?.font = UIFont(name: MyFonts.anekBold.rawValue, size: 18)
         signUpButton.setTitleColor(UIColor(named: AppAssets.Colors.loginText), for: .normal)
+        
+        signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
+    }
+    
+    @objc private func signUpTapped() {
+        let vc = SignUpPageViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+        print("pressed")
     }
     
     private func setupLoginButton() {
-        LoginButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(LoginButton)
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(loginButton)
         
-        LoginButton.setTitle("Log In", for: .normal)
-        LoginButton.setTitleColor(.white, for: .normal)
-        LoginButton.titleLabel?.font = .systemFont(ofSize: 16)
-        LoginButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
-        LoginButton.layer.cornerRadius = 15
+        loginButton.setTitle("Log In", for: .normal)
+        loginButton.setTitleColor(.white, for: .normal)
+        loginButton.titleLabel?.font = .systemFont(ofSize: 16)
+        loginButton.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
+        loginButton.layer.cornerRadius = 15
+        
+        loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func loginButtonTapped() {
+        guard usernameTextField.text != "", usernameTextField.text != nil, usernameTextField.text?.isEmail() == true else {
+            usernameTextField.layer.borderColor = UIColor.red.cgColor
+            usernameTextField.shake()
+            showAlert(title: "Incorrect Username Address", message: "Please Enter Valid Username")
+            return
+        }
+        
+        guard passwordTextField.text != "", passwordTextField.text != nil else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
+            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard passwordTextField.text!.count >= 8 else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
+            showAlert(title: "Incorrect Password", message: "Please Enter Valid Password")
+            return
+        }
+        
+        let user = LoginRequest(email: usernameTextField.text!, password: passwordTextField.text!)
+        
+        viewModel.logIn(user: user) { result in
+            switch result {
+            case .success(_):
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { [weak self] in
+                    self?.navigateToHomePage()
+                })
+            case .failure(_):
+                DispatchQueue.main.async {
+                    self.loginFail()
+                }
+                print("failed to log in")
+            }
+        }
+    }
+    
+    private func navigateToHomePage() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.window?.rootViewController = TabBarController()
+    }
+    
+    private func loginFail() {
+        showAlert(title: "Unable To Log In", message: "Incorrect Username or Password")
+        usernameTextField.layer.borderColor = UIColor.red.cgColor
+        passwordTextField.layer.borderColor = UIColor.red.cgColor
+        
+        usernameTextField.shake()
+        passwordTextField.shake()
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            LoginButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -100),
-            LoginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25),
-            LoginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25),
-            LoginButton.heightAnchor.constraint(equalTo: LoginButton.widthAnchor, multiplier: 0.175),
+            loginButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -100),
+            loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25),
+            loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25),
+            loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 0.175),
             
             emailLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
             emailLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 35),
