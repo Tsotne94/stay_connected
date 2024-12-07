@@ -15,6 +15,7 @@ class AddQuestionViewController: UIViewController {
     private let subjectContainer = UIView()
     private let subjectLabel = UILabel()
     private let subjectTextField = UITextField()
+
     
     private let tagContainer = UIView()
     private let tagLabel = UILabel()
@@ -22,8 +23,10 @@ class AddQuestionViewController: UIViewController {
     
     private let allTags = TagsCollectionView()
     
-    private let questionTextField = UITextField()
+    private let questionTextField = UITextView()
     private let questionButton = UIButton()
+    private let placeholderLabel = UILabel()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +45,30 @@ class AddQuestionViewController: UIViewController {
         setupallTags()
         setupTextFields()
         setupConstraints()
+        setupPlaceholder()
     }
+    
+    private func setupPlaceholder() {
+            placeholderLabel.text = "Type your question here"
+            placeholderLabel.textColor = .lightGray
+            placeholderLabel.font = .systemFont(ofSize: 15, weight: .regular)
+            placeholderLabel.isUserInteractionEnabled = false
+            
+            questionTextField.addSubview(placeholderLabel)
+            
+            placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                placeholderLabel.topAnchor.constraint(equalTo: questionTextField.topAnchor, constant: 8),
+                placeholderLabel.leftAnchor.constraint(equalTo: questionTextField.leftAnchor, constant: 3)
+            ])
+            
+            updatePlaceholderVisibility()
+        }
+        
+        private func updatePlaceholderVisibility() {
+            placeholderLabel.isHidden = !questionTextField.text.isEmpty
+        }
+    
     
     private func setupTitleContainer() {
         titleContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -136,9 +162,6 @@ class AddQuestionViewController: UIViewController {
     }
     
     private func setupTextFields() {
-        setupPadding(for: questionTextField)
-        
-        questionTextField.placeholder = "Type your question here"
         questionTextField.layer.borderWidth = 1
         questionTextField.layer.borderColor = UIColor(named: AppAssets.Colors.tabTitle)?.cgColor
         questionTextField.layer.cornerRadius = 12
@@ -147,6 +170,10 @@ class AddQuestionViewController: UIViewController {
         view.addSubview(questionTextField)
         
         questionTextField.delegate = self
+        questionTextField.isScrollEnabled = false
+        questionTextField.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        questionTextField.textColor = .lightGray
+
     }
     
     private func setupPadding(for searchBar: UITextField) {
@@ -229,9 +256,19 @@ class AddQuestionViewController: UIViewController {
     }
 }
 
-extension AddQuestionViewController: UITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        let enteredText = textField.text ?? ""
+extension AddQuestionViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        updatePlaceholderVisibility()
+        let enteredText = questionTextField.text ?? ""
         print("User finished editing with text: \(enteredText)")
+        let size = CGSize(width: view.frame.width, height: .infinity)
+        let estimatedSize = questionTextField.sizeThatFits(size)
+        
+        questionTextField.constraints.forEach { constraint in
+            if constraint.firstAttribute == .height {
+                constraint.constant = estimatedSize.height
+            }
+        }
     }
 }
+
