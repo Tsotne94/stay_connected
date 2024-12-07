@@ -15,6 +15,7 @@ class AddQuestionViewController: UIViewController {
     private let subjectContainer = UIView()
     private let subjectLabel = UILabel()
     private let subjectTextField = UITextField()
+
     
     private let tagContainer = UIView()
     private let tagLabel = UILabel()
@@ -23,10 +24,12 @@ class AddQuestionViewController: UIViewController {
     private let allTags = AddQuestionTagsCollection()
     private var viewmodel: AddQuestionViewModel?
     
-    private let questionTextField = UITextField()
+    private let questionTextField = UITextView()
     private let questionButton = UIButton()
+    private let placeholderLabel = UILabel()
+  
     private var selectedTagsItems: [Tag] = []
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewmodel = AddQuestionViewModel()
@@ -47,7 +50,32 @@ class AddQuestionViewController: UIViewController {
         setupallTags()
         setupTextFields()
         setupConstraints()
+        setupPlaceholder()
+        setupSendButton()
+
     }
+    
+    private func setupPlaceholder() {
+            placeholderLabel.text = "Type your question here"
+            placeholderLabel.textColor = .lightGray
+            placeholderLabel.font = .systemFont(ofSize: 15, weight: .regular)
+            placeholderLabel.isUserInteractionEnabled = false
+            
+            questionTextField.addSubview(placeholderLabel)
+            
+            placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                placeholderLabel.topAnchor.constraint(equalTo: questionTextField.topAnchor, constant: 8),
+                placeholderLabel.leftAnchor.constraint(equalTo: questionTextField.leftAnchor, constant: 10)
+            ])
+            
+            updatePlaceholderVisibility()
+        }
+        
+        private func updatePlaceholderVisibility() {
+            placeholderLabel.isHidden = !questionTextField.text.isEmpty
+        }
+    
     
     private func setupTitleContainer() {
         titleContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -142,9 +170,6 @@ class AddQuestionViewController: UIViewController {
     }
     
     private func setupTextFields() {
-        setupPadding(for: questionTextField)
-        
-        questionTextField.placeholder = "Type your question here"
         questionTextField.layer.borderWidth = 1
         questionTextField.layer.borderColor = UIColor(named: AppAssets.Colors.tabTitle)?.cgColor
         questionTextField.layer.cornerRadius = 12
@@ -153,6 +178,13 @@ class AddQuestionViewController: UIViewController {
         view.addSubview(questionTextField)
         
         questionTextField.delegate = self
+        questionTextField.isScrollEnabled = false
+        questionTextField.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        questionTextField.textColor = .lightGray
+        questionTextField.textContainerInset = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 35)
+        questionTextField.textContainer.lineFragmentPadding = 0
+
+
     }
     
     private func setupPadding(for searchBar: UITextField) {
@@ -173,9 +205,31 @@ class AddQuestionViewController: UIViewController {
         searchBar.leftView = leftPaddingView
         searchBar.leftViewMode = .always
         
-        questionButton.addTarget(self, action: #selector(sendPressed), for: .touchUpInside)
     }
     
+    private func setupSendButton() {
+        let sendButton = UIButton()
+        sendButton.setImage(UIImage(named: AppAssets.Icons.sendMessage), for: .normal)
+        sendButton.tintColor = .gray
+        sendButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(sendButton)
+        
+        sendButton.addTarget(self, action: #selector(sendPressed), for: .touchUpInside)
+        
+        NSLayoutConstraint.activate([
+            sendButton.topAnchor.constraint(equalTo: questionTextField.topAnchor),
+            sendButton.rightAnchor.constraint(equalTo: questionTextField.rightAnchor, constant: -5),
+            sendButton.heightAnchor.constraint(equalToConstant: 30),
+            sendButton.widthAnchor.constraint(equalToConstant: 30)
+        ])
+        questionButton.addTarget(self, action: #selector(sendPressed), for: .touchUpInside)
+
+    }
+    
+
+
+    
+   
     @objc private func sendPressed() {
         guard let title = subjectTextField.text else { return }
         guard let content = questionTextField.text else { return }
@@ -240,10 +294,22 @@ class AddQuestionViewController: UIViewController {
     }
 }
 
-extension AddQuestionViewController: UITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        let enteredText = textField.text ?? ""
-        print("User finished editing with text: \(enteredText)")
+
+extension AddQuestionViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        updatePlaceholderVisibility()
+        let size = CGSize(width: textView.frame.width, height: .infinity)
+        let estimatedSize = textView.sizeThatFits(size)
+        if estimatedSize.height != textView.frame.height {
+            UIView.animate(withDuration: 0.2) {
+                self.questionTextField.constraints.forEach { constraint in
+                    if constraint.firstAttribute == .height {
+                        constraint.constant = estimatedSize.height
+                        self.view.layoutIfNeeded()
+                    }
+                }
+            }
+        }
     }
 }
 
