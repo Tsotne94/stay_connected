@@ -44,20 +44,5 @@ class ProfileViewModel {
     }
 }
     
-    private func getToken() -> String {
-        let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
-        let service = "stayConnected"
-        
-        let result = KeyChainManager.get(service: service, account: accessTokenKey) ?? Data()
-        return decodeToken(data: result)
-    }
-    
-    private func decodeToken(data: Data) -> String {
-        if let token = String(data: data, encoding: .utf8) {
-            return token
-        } else {
-            return ""
-        }
-    }
     
 
