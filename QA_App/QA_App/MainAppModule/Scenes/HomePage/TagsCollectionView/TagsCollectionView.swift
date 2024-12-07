@@ -9,6 +9,7 @@ import UIKit
 import Foundation
 
 class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
+    private var isGeneral = true
     private var selectable = true
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -25,7 +26,7 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     
     weak var delegate: QuestionProtocol?
     
-    private var pressedTag: [Int] = []
+    private static var pressedTag: [Int] = []
     private var tags: [Tag] = []
 
     init() {
@@ -35,6 +36,10 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func valueDidChange(value: Bool) {
+        isGeneral = value
     }
     
     private func setupCollection() {
@@ -54,7 +59,7 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     }
     
     func getTag() -> String? {
-        guard let id = pressedTag.first else { return nil }
+        guard let id = TagsCollectionView.pressedTag.first else { return nil }
         let tag = tags[id]
         return tag.name
     }
@@ -84,20 +89,28 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         guard let cell = collectionView.cellForItem(at: indexPath) as? TagsCollectionViewCell else { return }
         let tag = tags[indexPath.item]
         
-        for index in pressedTag {
+        for index in TagsCollectionView.pressedTag {
             if let previousCell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? TagsCollectionViewCell {
                 previousCell.returnToInitialState()
             }
         }
         
-        if pressedTag.contains(indexPath.item) {
-            delegate?.fetchQuestions(tag: nil, search: nil)
-            pressedTag.removeAll { $0 == indexPath.item }
+        if TagsCollectionView.pressedTag.contains(indexPath.item) {
+            if isGeneral {
+                delegate?.fetchQuestions(tag: nil, search: nil)
+            } else {
+                delegate?.fetchPersonalQuestions(tag: nil, search: nil)
+            }
+            TagsCollectionView.pressedTag.removeAll { $0 == indexPath.item }
             cell.returnToInitialState()
         } else {
-            delegate?.fetchQuestions(tag: tag.name, search: nil)
+            if isGeneral {
+                delegate?.fetchQuestions(tag: tag.name, search: nil)
+            } else {
+                delegate?.fetchPersonalQuestions(tag: tag.name, search: nil)
+            }
             cell.cellPressed(with: tag)
-            pressedTag = [indexPath.item]
+            TagsCollectionView.pressedTag = [indexPath.item]
         }
     }
 }

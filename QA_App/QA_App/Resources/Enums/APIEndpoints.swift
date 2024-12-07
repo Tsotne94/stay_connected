@@ -5,11 +5,11 @@
 //  Created by Cotne Chubinidze on 03.12.24.
 //
 enum APIEndpoints: String {
-    case allTags = "https://tumana777.pythonanywhere.com/api/tags/"
-    case signUp = "https://tumana777.pythonanywhere.com/api/user/register/"
-    case logIn = "https://tumana777.pythonanywhere.com/api/user/login/"
-    case qusetion = "https://tumana777.pythonanywhere.com/api/questions/"
-    case refresh = "https://tumana777.pythonanywhere.com/api/user/login/refresh/"
-    case profile = "https://tumana777.pythonanywhere.com/api/user/profile/"
-    case personal = "https://tumana777.pythonanywhere.com/api/user/profile/owned_questions/"
+    case allTags = "http://52.203.162.247/api/tags/"
+    case signUp = "http://52.203.162.247/api/user/register/"
+    case logIn = "http://52.203.162.247/api/user/login/"
+    case qusetion = "http://52.203.162.247/api/questions/"
+    case refresh = "http://52.203.162.247/api/user/login/refresh/"
+    case profile = "http://52.203.162.247/api/user/profile/"
+    case personal = "http://52.203.162.247/api/user/profile/owned_questions/"
 }

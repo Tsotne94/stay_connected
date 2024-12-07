@@ -240,7 +240,7 @@ final class LoginPageViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            loginButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -100),
+            loginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(view.frame.height * 0.1)),
             loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25),
             loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25),
             loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 0.175),
@@ -249,7 +249,7 @@ final class LoginPageViewController: UIViewController {
             emailLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 35),
             emailLabel.heightAnchor.constraint(equalToConstant: 15),
             
-            titleLabel.topAnchor.constraint(lessThanOrEqualTo: view.topAnchor, constant: 180),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.bottomAnchor.constraint(greaterThanOrEqualTo: emailLabel.topAnchor, constant: -50),
             

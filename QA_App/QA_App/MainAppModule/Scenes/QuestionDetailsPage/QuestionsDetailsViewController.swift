@@ -16,9 +16,9 @@ class QuestionsDetailsViewController: UIViewController {
     private let subjectLabel = UILabel()
     private let titleLabel = UILabel()
     private let publisherLabel = UILabel()
-    private let answersTablevIew = UITableView()
-    private var answerTextField: UITextField?
-    private let answerButotn = UIButton()
+    private let answersTableView = UITableView()
+    private var answerTextField = UITextField()
+    private let answerButton = UIButton()
     private var question: Question?
     private var viewModel: QuestionDetailsViewModel?
     
@@ -46,6 +46,7 @@ class QuestionsDetailsViewController: UIViewController {
         setupTitleLabel()
         setupPublisherLabel()
         setupAnswersTableView()
+        setupAnswerTextField()
         setupConstraints()
     }
 
@@ -54,9 +55,7 @@ class QuestionsDetailsViewController: UIViewController {
         view.addSubview(backButton)
         
         backButton.backgroundColor = .clear
-        backButton.setTitle("", for: .normal)
         backButton.setImage(UIImage(named: AppAssets.Icons.back), for: .normal)
-        
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
@@ -78,7 +77,6 @@ class QuestionsDetailsViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         
-        titleLabel.numberOfLines = 3
         titleLabel.textAlignment = .left
         titleLabel.textColor = UIColor(named: AppAssets.Colors.bodyText)
         titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -95,110 +93,66 @@ class QuestionsDetailsViewController: UIViewController {
         publisherLabel.textColor = UIColor(named: AppAssets.Colors.tabTitle)
         publisherLabel.textAlignment = .left
         publisherLabel.text = question?.author.fullName
-        
     }
     
     private func setupAnswersTableView() {
-        answersTablevIew.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(answersTablevIew)
+        answersTableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(answersTableView)
         
-        answersTablevIew.dataSource = self
-        answersTablevIew.delegate = self
-        answersTablevIew.register(AnswersTableViewCell.self, forCellReuseIdentifier: AnswersTableViewCell.reuseIdentifier)
-        
-        answersTablevIew.rowHeight = UITableView.automaticDimension
-        answersTablevIew.estimatedRowHeight = 100
-        answersTablevIew.backgroundColor = .white
-        answersTablevIew.separatorStyle = .none
-        
-        if viewModel?.replayCount ?? 6 < 5 {
-            setupTextFields()
-            answersTablevIew.tableFooterView = answerTextField
-            NSLayoutConstraint.activate([
-                answersTablevIew.topAnchor.constraint(equalTo: publisherLabel.bottomAnchor, constant: 20),
-                answersTablevIew.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
-                answersTablevIew.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-                answersTablevIew.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            ])
-            
-        } else {
-            setupTextFields()
-            NSLayoutConstraint.activate([
-                answersTablevIew.topAnchor.constraint(equalTo: publisherLabel.bottomAnchor, constant: 20),
-                answersTablevIew.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
-                answersTablevIew.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-                answersTablevIew.bottomAnchor.constraint(equalTo: answerTextField?.topAnchor ?? view.bottomAnchor, constant: -5),
-            ])
-        }
+        answersTableView.dataSource = self
+        answersTableView.delegate = self
+        answersTableView.register(AnswersTableViewCell.self, forCellReuseIdentifier: AnswersTableViewCell.reuseIdentifier)
+        answersTableView.rowHeight = UITableView.automaticDimension
+        answersTableView.estimatedRowHeight = 100
+        answersTableView.backgroundColor = .white
+        answersTableView.separatorStyle = .none
     }
     
-    private func setupTextFields() {
-        answerTextField = UITextField()
-        guard let answerTextField else { return }
-        answerTextField.sizeToFit()
-
-        setupPadding(for: answerTextField)
+    private func setupAnswerTextField() {
+        answerTextField.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(answerTextField)
         
         answerTextField.placeholder = "Type your reply here"
         answerTextField.layer.borderWidth = 1
         answerTextField.layer.borderColor = UIColor(named: AppAssets.Colors.tabTitle)?.cgColor
         answerTextField.layer.cornerRadius = 12
-        
-        if viewModel?.replayCount ?? 4 > 5 {
-            answerTextField.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(answerTextField)
-            
-            NSLayoutConstraint.activate([
-                answerTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                answerTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
-                answerTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-                answerTextField.heightAnchor.constraint(equalToConstant: 45)
-            ])
-        } else {
-            answerTextField.frame = CGRect(x: 0, y: 0, width: view.bounds.width - 20, height: 45)
-        }
-        
-        answerButotn.addTarget(self, action: #selector(answerTapped), for: .touchUpInside)
+        answerTextField.heightAnchor.constraint(equalToConstant: 45).isActive = true
+
+        setupPadding(for: answerTextField)
     }
     
     @objc private func answerTapped() {
-        guard let answerTextField = answerTextField else {
-            print("Answer text field is nil.")
+        guard let answerText = answerTextField.text, !answerText.isEmpty, answerText.count > 15 else {
+            showAlert(title: "Replay has to be longer that 15 characters", message: "Replay is too short")
             return
         }
         
-        guard let answerText = answerTextField.text, !answerText.isEmpty, answerText.count > 15 else {
-            showAlert(title: "Replay has to be longer that 15 caracters", message: "replay is too short")
-            return
-        }
-        let answer: AnswerModelRequest = AnswerModelRequest(content: answerText)
+        let answer = AnswerModelRequest(content: answerText)
         viewModel?.postAnswer(answer: answer)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-            self.answersTablevIew.reloadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.answersTableView.reloadData()
             self.view.layoutIfNeeded()
-        })
+        }
         answerTextField.text = ""
     }
     
-    private func setupPadding(for searchBar: UITextField) {
+    private func setupPadding(for textField: UITextField) {
         let rightPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 35, height: 40))
-        answerButotn.setImage(UIImage(named: AppAssets.Icons.sendMessage), for: .normal)
-        answerButotn.tintColor = .gray
-                    
-        answerButotn.frame = CGRect(x: 0, y: (rightPaddingView.bounds.height - 25) / 2, width: 30, height: 25)
-        answerButotn.clipsToBounds = true
-        rightPaddingView.addSubview(answerButotn)
-        rightPaddingView.isUserInteractionEnabled = true
         
-        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: searchBar.frame.height))
+        answerButton.setImage(UIImage(named: AppAssets.Icons.sendMessage), for: .normal)
+        answerButton.tintColor = .gray
+        answerButton.frame = CGRect(x: 0, y: (rightPaddingView.bounds.height - 25) / 2, width: 30, height: 25)
+        rightPaddingView.addSubview(answerButton)
         
-        searchBar.rightView = rightPaddingView
-        searchBar.rightViewMode = .always
+        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 40))
         
-        searchBar.leftView = leftPaddingView
-        searchBar.leftViewMode = .always
+        textField.rightView = rightPaddingView
+        textField.rightViewMode = .always
+        textField.leftView = leftPaddingView
+        textField.leftViewMode = .always
         
-        answerButotn.addTarget(self, action: #selector(answerTapped), for: .touchUpInside)
+        answerButton.addTarget(self, action: #selector(answerTapped), for: .touchUpInside)
     }
     
     private func setupConstraints() {
@@ -216,6 +170,15 @@ class QuestionsDetailsViewController: UIViewController {
             publisherLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             publisherLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15),
             publisherLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -15),
+            
+            answerTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
+            answerTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
+            answerTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
+            
+            answersTableView.topAnchor.constraint(equalTo: publisherLabel.bottomAnchor, constant: 20),
+            answersTableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
+            answersTableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
+            answersTableView.bottomAnchor.constraint(equalTo: answerTextField.topAnchor, constant: -10),
         ])
     }
 }
@@ -231,17 +194,21 @@ extension QuestionsDetailsViewController: UITableViewDataSource, UITableViewDele
         cell.configure(answer: answer)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension QuestionsDetailsViewController: ReloadTable {
-    func reloadTable() {
-        DispatchQueue.main.async { [weak self] in
-            self?.answersTablevIew.reloadData()
-        }
-
+    func reload() {
+        showAlert(title: "You can not replay to your own Questions", message: "Adding answer is not possible")
+        answerTextField.text = ""
+        view.layoutIfNeeded()
     }
     
-    func reload() {
-        print("wrong reload")
+    func reloadTable() {
+        answersTableView.reloadData()
     }
 }
+

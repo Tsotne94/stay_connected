@@ -13,6 +13,7 @@ protocol ReloadTable: AnyObject {
 }
 
 class QuestionsTableView: UIView {
+    private var isGeneral = true
     private let searchBar = UISearchBar()
     private let table = UITableView()
     
@@ -23,16 +24,27 @@ class QuestionsTableView: UIView {
     private var tagsCollection: TagsCollectionView?
     weak var delegate: QuestionsTableViewDelegate?
     
+    
     init(viewModel: QuestionProtocol) {
-            self.viewModel = viewModel
-            super.init(frame: .zero)
-            self.tagsCollection = TagsCollectionView()  
-            setupView()
-            
-            if let homePageViewModel = viewModel as? HomePageViewModel {
-                homePageViewModel.delegate = self
-            }
+        self.viewModel = viewModel
+        super.init(frame: .zero)
+        self.tagsCollection = TagsCollectionView()
+        setupView()
+        
+        if let homePageViewModel = viewModel as? HomePageViewModel {
+            homePageViewModel.delegate = self
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(valueDidChange), name: Notification.Name("generalChanged"), object: nil)
+    }
+    
+    @objc private func valueDidChange() {
+        isGeneral.toggle()
+        tagsCollection?.valueDidChange(value: isGeneral)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -168,15 +180,11 @@ extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
 
 extension QuestionsTableView: ReloadTable {
     func reloadTable() {
-        DispatchQueue.main.async { [weak self] in
-            self?.table.reloadData()
-        }
+        table.reloadData()
     }
     
     func reload() {
-        DispatchQueue.main.async { [weak self] in
-            self!.tagsCollection?.updateTags(self?.viewModel?.tags() ?? [])
-        }
+        tagsCollection?.updateTags(viewModel?.tags() ?? [])
     }
 }
 
@@ -184,7 +192,11 @@ extension QuestionsTableView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let homePageViewModel = viewModel as? HomePageViewModel {
             let tag = tagsCollection?.getTag()
-            homePageViewModel.fetchQuestions(tag: tag, search: searchText)
+            if isGeneral {
+                homePageViewModel.fetchQuestions(tag: tag, search: searchText)
+            } else {
+                homePageViewModel.fetchPersonalQuestions(tag: tag, search: searchText)
+            }
         }
     }
 }

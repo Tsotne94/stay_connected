@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MyDateFormatter
 
 class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
     private let profileImageView = UIImageView()
@@ -14,6 +15,7 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
     private let answerLabel = UILabel()
     private let moreButton = UIButton()
     private let acceptedBadge = UIImageView()
+    private let dateFormatter = MyDateFormatter()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -109,14 +111,12 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
             
             acceptedBadge.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
             acceptedBadge.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -5)
-            
         ])
-        
     }
     
     func configure(answer: Answer) {
         nameLabel.text = answer.author.fullName
-        dateLabel.text = answer.createdAt
+        dateLabel.text = dateFormatter.format(answer.createdAt)
         answerLabel.text = answer.content
         layoutIfNeeded()
     }

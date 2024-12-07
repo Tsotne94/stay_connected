@@ -71,6 +71,9 @@ class QuestionDetailsViewModel {
                     self?.fetchAnswers(for: self!.questionID!)
                 case .failure(let failure):
                     print("failed to post answer \(failure.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self?.delegate?.reload()
+                    }
                 }
             }
     }

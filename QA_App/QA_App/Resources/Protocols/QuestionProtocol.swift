@@ -10,4 +10,5 @@ protocol QuestionProtocol: AnyObject {
     func tags() -> [Tag]
     func asnwerCount(for index: Int) -> Int
     func fetchQuestions(tag: String?, search: String?)
+    func fetchPersonalQuestions(tag: String?, search: String?)
 }

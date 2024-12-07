@@ -174,49 +174,49 @@ class SignUpPageViewController: UIViewController {
     
     @objc private func signUpTapped() {
         
-//        guard nameTextField.text != "", nameTextField.text != nil else {
-//            nameTextField.layer.borderColor = UIColor.red.cgColor
-//            nameTextField.shake()
-//            showAlert(title: "Incorrect Username!", message: "Please Enter Valid Username")
-//            return
-//        }
-//        
-//        guard usernameTextField.text != "", usernameTextField.text != nil, usernameTextField.text?.isEmail() == true else {
-//            usernameTextField.layer.borderColor = UIColor.red.cgColor
-//            usernameTextField.shake()
-//            showAlert(title: "Incorrect Email Address", message: "Please Enter Valid Email")
-//            return
-//        }
-//        
-//        guard passwordTextField.text != "", passwordTextField.text != nil else {
-//            passwordTextField.layer.borderColor = UIColor.red.cgColor
-//            passwordTextField.shake()
-//            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
-//            return
-//        }
-//        
-//        guard passwordTextField.text!.count >= 8 else {
-//            passwordTextField.layer.borderColor = UIColor.red.cgColor
-//            passwordTextField.shake()
-//            showAlert(title: "Password Field Can't be less than 8 caracters", message: "Please Enter Valid Password")
-//            return
-//        }
-//        
-//        guard confirmPasswordTextfield.text != "", confirmPasswordTextfield.text != nil else {
-//            confirmPasswordTextfield.layer.borderColor = UIColor.red.cgColor
-//            confirmPasswordTextfield.shake()
-//            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
-//            return
-//        }
-//        
-//        guard confirmPasswordTextfield.text == passwordTextField.text else {
-//            confirmPasswordTextfield.layer.borderColor = UIColor.red.cgColor
-//            passwordTextField.layer.borderColor = UIColor.red.cgColor
-//            confirmPasswordTextfield.shake()
-//            passwordTextField.shake()
-//            showAlert(title: "Password Should Match", message: "Please Enter Valid Password")
-//            return
-//        }
+        guard nameTextField.text != "", nameTextField.text != nil else {
+            nameTextField.layer.borderColor = UIColor.red.cgColor
+            nameTextField.shake()
+            showAlert(title: "Incorrect Username!", message: "Please Enter Valid Username")
+            return
+        }
+        
+        guard usernameTextField.text != "", usernameTextField.text != nil, usernameTextField.text?.isEmail() == true else {
+            usernameTextField.layer.borderColor = UIColor.red.cgColor
+            usernameTextField.shake()
+            showAlert(title: "Incorrect Email Address", message: "Please Enter Valid Email")
+            return
+        }
+        
+        guard passwordTextField.text != "", passwordTextField.text != nil else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
+            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard passwordTextField.text!.count >= 8 else {
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.shake()
+            showAlert(title: "Password Field Can't be less than 8 caracters", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard confirmPasswordTextfield.text != "", confirmPasswordTextfield.text != nil else {
+            confirmPasswordTextfield.layer.borderColor = UIColor.red.cgColor
+            confirmPasswordTextfield.shake()
+            showAlert(title: "Password Field Can't be Empthy", message: "Please Enter Valid Password")
+            return
+        }
+        
+        guard confirmPasswordTextfield.text == passwordTextField.text else {
+            confirmPasswordTextfield.layer.borderColor = UIColor.red.cgColor
+            passwordTextField.layer.borderColor = UIColor.red.cgColor
+            confirmPasswordTextfield.shake()
+            passwordTextField.shake()
+            showAlert(title: "Password Should Match", message: "Please Enter Valid Password")
+            return
+        }
         
         let user = RegisterRequest(
             email: usernameTextField.text!,

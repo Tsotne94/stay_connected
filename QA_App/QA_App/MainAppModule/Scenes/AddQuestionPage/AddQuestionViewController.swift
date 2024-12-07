@@ -237,10 +237,6 @@ class AddQuestionViewController: UIViewController {
 
     }
     
-
-
-    
-   
     @objc private func sendPressed() {
         guard let title = subjectTextField.text else { return }
         guard let content = questionTextField.text else { return }

@@ -8,13 +8,18 @@
 import UIKit
 
 class HomePageViewController: UIViewController, IdentifiableProtocol {
-    var general = true
+    private var  general = true {
+        didSet {
+            NotificationCenter.default.post(name: Notification.Name("generalChanged"), object: general)
+        }
+    }
     private let titleLabel = UILabel()
     private let addQuestionButton = UIButton()
     private let generalButton = UIButton()
     private let personalButton = UIButton()
     private let viewModel = HomePageViewModel()
     private var questionsTableView: QuestionsTableView?
+    
     
     init() {
         super.init(nibName: nil, bundle: nil)
