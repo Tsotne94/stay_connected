@@ -6,14 +6,26 @@
 //
 
 import UIKit
+
 class ProfilePageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, IdentifiableProtocol {
 
-    private let ImageView = UIImageView()
-    private let FullnameLabel = UILabel()
-    private let EmailLabel = UILabel()
+    private let imageView = UIImageView()
+    private let fullnameLabel = UILabel()
+    private let emailLabel = UILabel()
     private let tableView = UITableView()
     private let titleLabel = UILabel()
     private let imageButton = UIButton()
+
+    private let viewModel: ProfileViewModel
+
+    init(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +33,27 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         view.backgroundColor = .white
         navigationController?.isNavigationBarHidden = true
         setupUI()
+        bindViewModel()
+        viewModel.fetchUserProfile()
+    }
+
+    private func bindViewModel() {
+        viewModel.onUpdate = { [weak self] in
+            self?.updateUI()
+        }
+    }
+
+    private func updateUI() {
+        fullnameLabel.text = viewModel.userProfile?.fullName ?? "No Name"
+        emailLabel.text = viewModel.userProfile?.email ?? "No Email"
+        tableView.reloadData()
+
+    }
+
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 
     private func setupUI() {
@@ -32,31 +65,31 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         setupTableView()
         setupConstraints()
     }
-    
+
     private func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
-        
+
         titleLabel.text = "Profile"
         titleLabel.font = UIFont(name: MyFonts.anekBold.rawValue, size: 20)
         titleLabel.textAlignment = .left
     }
 
     private func setupImageView() {
-        view.addSubview(ImageView)
-        ImageView.translatesAutoresizingMaskIntoConstraints = false
-        ImageView.image = UIImage(systemName: "person.crop.circle.fill")
-        ImageView.contentMode = .scaleAspectFit
-        ImageView.tintColor = .white
-        ImageView.layer.cornerRadius = 60
-        ImageView.clipsToBounds = true
-        ImageView.backgroundColor = .gray
+        view.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: "person.crop.circle.fill")
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .white
+        imageView.layer.cornerRadius = 60
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = .gray
     }
-    
+
     private func setupImageButton() {
         imageButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageButton)
-        
+
         imageButton.setImage(UIImage(named: AppAssets.Icons.camera), for: .normal)
         imageButton.setTitle("", for: .normal)
         imageButton.backgroundColor = .clear
@@ -64,21 +97,21 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     private func setupFullnameLabel() {
-        view.addSubview(FullnameLabel)
-        FullnameLabel.translatesAutoresizingMaskIntoConstraints = false
-        FullnameLabel.textColor = .black
-        FullnameLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        FullnameLabel.textAlignment = .center
-        FullnameLabel.text = "Shawn Howard"
+        view.addSubview(fullnameLabel)
+        fullnameLabel.translatesAutoresizingMaskIntoConstraints = false
+        fullnameLabel.textColor = .black
+        fullnameLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        fullnameLabel.textAlignment = .center
+        fullnameLabel.text = "Loading..."
     }
 
     private func setupEmailLabel() {
-        view.addSubview(EmailLabel)
-        EmailLabel.translatesAutoresizingMaskIntoConstraints = false
-        EmailLabel.textColor = .darkGray
-        EmailLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        EmailLabel.textAlignment = .center
-        EmailLabel.text = "shawn_howard@gmail.com"
+        view.addSubview(emailLabel)
+        emailLabel.translatesAutoresizingMaskIntoConstraints = false
+        emailLabel.textColor = .darkGray
+        emailLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        emailLabel.textAlignment = .center
+        emailLabel.text = "Loading..."
     }
 
     private func setupTableView() {
@@ -97,22 +130,22 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
             titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15),
             titleLabel.heightAnchor.constraint(equalToConstant: 20),
-            
-            ImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            ImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.175),
-            ImageView.widthAnchor.constraint(equalToConstant: 120),
-            ImageView.heightAnchor.constraint(equalToConstant: 121),
-            
-            imageButton.bottomAnchor.constraint(equalTo: ImageView.bottomAnchor),
-            imageButton.rightAnchor.constraint(equalTo: ImageView.rightAnchor),
 
-            FullnameLabel.topAnchor.constraint(equalTo: ImageView.bottomAnchor, constant: 33),
-            FullnameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.175),
+            imageView.widthAnchor.constraint(equalToConstant: 120),
+            imageView.heightAnchor.constraint(equalToConstant: 121),
 
-            EmailLabel.topAnchor.constraint(equalTo: FullnameLabel.bottomAnchor, constant: 8),
-            EmailLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor),
+            imageButton.rightAnchor.constraint(equalTo: imageView.rightAnchor),
 
-            tableView.topAnchor.constraint(equalTo: EmailLabel.bottomAnchor, constant: 49),
+            fullnameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 33),
+            fullnameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            emailLabel.topAnchor.constraint(equalTo: fullnameLabel.bottomAnchor, constant: 8),
+            emailLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            tableView.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 49),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -130,10 +163,12 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
 
         switch indexPath.row {
         case 0:
-            cell.configureCell(leftText: "Score", rightText: "25", icon: nil)
+            let score = viewModel.userProfile?.score ?? 7
+            cell.configureCell(leftText: "Score", rightText: "\(score)", icon: nil)
             cell.selectionStyle = .none
         case 1:
-            cell.configureCell(leftText: "Answered Questions", rightText: "15", icon: nil)
+            let answeredQuestions = viewModel.userProfile?.answeredQuestionsCount ?? 7
+            cell.configureCell(leftText: "Answered Questions", rightText: "\(answeredQuestions)", icon: nil)
             cell.selectionStyle = .none
         case 2:
             cell.configureCell(leftText: "Log out", rightText: nil, icon: UIImage(named: "logOutIcon"))
@@ -151,9 +186,14 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 2 {
-            print("Log out")
+            navigateToLoginPage()
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    private func navigateToLoginPage() {
+        let loginPageViewController = LoginPageViewController()
+        navigationController?.pushViewController(loginPageViewController, animated: true)
+    }
+    
 }
-
