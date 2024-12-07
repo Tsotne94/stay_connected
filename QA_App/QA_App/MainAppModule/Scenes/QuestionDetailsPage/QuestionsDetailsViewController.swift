@@ -6,6 +6,7 @@
 //
 //
 import UIKit
+import MyDateFormatter
 
 protocol QuestionsTableViewDelegate: AnyObject {
     func didSelectQuestion(question: Question)
@@ -21,6 +22,7 @@ class QuestionsDetailsViewController: UIViewController {
     private let answerButton = UIButton()
     private var question: Question?
     private var viewModel: QuestionDetailsViewModel?
+    private let dateFormatter = MyDateFormatter()
     
     init(question: Question) {
         super.init(nibName: nil, bundle: nil)
@@ -92,7 +94,9 @@ class QuestionsDetailsViewController: UIViewController {
         publisherLabel.font = .systemFont(ofSize: 13, weight: .regular)
         publisherLabel.textColor = UIColor(named: AppAssets.Colors.tabTitle)
         publisherLabel.textAlignment = .left
-        publisherLabel.text = question?.author.fullName
+        let date = dateFormatter.format(question?.createdAt ?? "")
+        let name = question?.author.fullName ?? ""
+        publisherLabel.text = "\(name) asked on: \(date)"
     }
     
     private func setupAnswersTableView() {
