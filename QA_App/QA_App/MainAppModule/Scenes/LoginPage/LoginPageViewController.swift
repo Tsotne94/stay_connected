@@ -164,9 +164,12 @@ final class LoginPageViewController: UIViewController {
     }
     
     @objc private func signUpTapped() {
-        let vc = SignUpPageViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
-        print("pressed")
+        let signUpVC = SignUpPageViewController()
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(signUpVC, animated: true)
+        } else {
+            print("Navigation controller is nil")
+        }
     }
     
     private func setupLoginButton() {

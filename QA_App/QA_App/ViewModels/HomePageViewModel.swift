@@ -128,6 +128,6 @@ class HomePageViewModel: QuestionProtocol {
     
     private func navigateToHomePage() {
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-        sceneDelegate?.window?.rootViewController = LoginPageViewController()
+        sceneDelegate?.window?.rootViewController = UINavigationController(rootViewController: LoginPageViewController())
     }
 }
