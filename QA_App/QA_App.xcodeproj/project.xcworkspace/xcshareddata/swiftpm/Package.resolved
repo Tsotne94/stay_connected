@@ -1,13 +1,22 @@
 {
-  "originHash" : "e174d7fbd0f5d2be5bfd25816befabe94a9def9e5c818175bb644a70b4ecb6a6",
+  "originHash" : "2e4d87a9c4200450c2b6a3e98a36d295363489d2d504b7c754c6c496d3602c30",
   "pins" : [
+    {
+      "identity" : "dataformatter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tsotne94/dataFormatter.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a43bb5195ce6df2289b5f1b3be2979d28a850218"
+      }
+    },
     {
       "identity" : "networkmanager",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tsotne94/NetworkManager.git",
       "state" : {
         "branch" : "main",
-        "revision" : "8ac985283e75dc4aaedca4c654447b05de0ce528"
+        "revision" : "620d92acdc9f3a5d1178c1bea644a58913ade79f"
       }
     }
   ],

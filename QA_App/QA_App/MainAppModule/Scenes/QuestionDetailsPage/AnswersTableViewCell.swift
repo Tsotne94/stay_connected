@@ -115,7 +115,7 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
     }
     
     func configure(with: Answer) {
-        nameLabel.text = with.author
+        nameLabel.text = with.author.fullName
         dateLabel.text = with.createdAt
         answerLabel.text = with.content
         layoutIfNeeded()

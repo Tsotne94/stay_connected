@@ -254,7 +254,6 @@ extension AddQuestionViewController: AddQUestion {
         subjectTextField.text = ""
         questionTextField.text = ""
         selectedTagsItems.removeAll()
-        allTags.updateTags(selectedTagsItems)
         view.layoutIfNeeded()
     }
     

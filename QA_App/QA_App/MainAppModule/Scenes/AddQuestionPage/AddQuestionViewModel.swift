@@ -37,8 +37,13 @@ class AddQuestionViewModel {
             bearerToken: token) { [weak self] result in
                 switch result {
                 case .success(_):
-                    self?.delegate?.success()
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.success()
+                    }
                 case .failure(let failure):
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.success()
+                    }
                     print(failure.localizedDescription)
                 }
             }
