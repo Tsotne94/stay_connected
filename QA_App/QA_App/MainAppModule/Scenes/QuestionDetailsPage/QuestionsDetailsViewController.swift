@@ -190,9 +190,28 @@ extension QuestionsDetailsViewController: UITableViewDataSource, UITableViewDele
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AnswersTableViewCell.reuseIdentifier, for: indexPath) as! AnswersTableViewCell
-        guard let answer = viewModel?.singleAnswer(at: indexPath.row) else { return cell }
-        cell.configure(answer: answer)
-        return cell
+        if indexPath.row == 0, let answer = viewModel?.acceptedAnswer() {
+               setImage(for: cell.profileImageView, with: answer.author.imageUrl)
+               cell.setupAccepted(answer: answer)
+               return cell
+           }
+
+           let singleAnswerIndex = indexPath.row - (viewModel?.acceptedAnswer() != nil ? 1 : 0)
+           guard let answer = viewModel?.singleAnswer(at: singleAnswerIndex) else {
+               return cell
+           }
+
+           setImage(for: cell.profileImageView, with: answer.author.imageUrl)
+           cell.configure(answer: answer)
+           return cell
+       }
+
+       private func setImage(for imageView: UIImageView, with imageUrl: String?) {
+           if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
+               imageView.load(url: url)
+           } else {
+               imageView.image = UIImage(systemName: "person.fill")
+           }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
