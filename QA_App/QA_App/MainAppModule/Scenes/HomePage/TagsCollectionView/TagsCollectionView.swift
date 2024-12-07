@@ -24,8 +24,8 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
     
     weak var delegate: HomePageViewModel?
     
-    private(set) var pressedTag: Int?
-    private(set) var tags: [Tag] = []
+    private var pressedTag: [Int] = []
+    private var tags: [Tag] = []
 
     init() {
         super.init(frame: .zero)
@@ -52,6 +52,12 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         ])
     }
     
+    func getTag() -> String? {
+        guard let id = pressedTag.first else { return nil }
+        let tag = tags[id]
+        return tag.name
+    }
+    
     func disableUserInteraction() {
         collectionView.isUserInteractionEnabled = false
     }
@@ -76,20 +82,20 @@ class TagsCollectionView: UIView, UICollectionViewDataSource, UICollectionViewDe
         guard let cell = collectionView.cellForItem(at: indexPath) as? TagsCollectionViewCell else { return }
         let tag = tags[indexPath.item]
         
-        
-        if let pressedTag, let previousCell = collectionView.cellForItem(at: IndexPath(item: pressedTag, section: 0)) as? TagsCollectionViewCell {
-            previousCell.returnToInitialState()
-            
+        for index in pressedTag {
+            if let previousCell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? TagsCollectionViewCell {
+                previousCell.returnToInitialState()
+            }
         }
         
-        if let pressedTag {
+        if pressedTag.contains(indexPath.item) {
             delegate?.fetchQuestions()
-            self.pressedTag = nil
+            pressedTag.removeAll { $0 == indexPath.item }
             cell.returnToInitialState()
         } else {
             delegate?.fetchQuestions(tag: tag.name)
             cell.cellPressed(with: tag)
-            pressedTag = indexPath.item
+            pressedTag = [indexPath.item]
         }
     }
 }

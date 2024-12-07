@@ -12,7 +12,6 @@ class HomePageViewModel: QuestionProtocol {
     private var response = Response(count: 0, next: nil, previous: nil, results: [Question]())
     private var tagsArr = TagsResponse(count: 0, next: nil, previous: nil, results: [])
     weak var delegate: ReloadTable?
-    var questionsChange: (() -> Void)?
     
     let networkManager: NetworkPackage
     
@@ -92,10 +91,24 @@ class HomePageViewModel: QuestionProtocol {
             })
     }
     
-    func fetchPersonalQuestions() {
+    func fetchPersonalQuestions(tag: String? = nil, search: String? = nil) {
         let token = getToken()
+        
+        var urlComponents = URLComponents(string: APIEndpoints.personal.rawValue)!
+        var queryItems = [URLQueryItem]()
+        
+        if let tag = tag {
+            queryItems.append(URLQueryItem(name: "tags__name", value: tag))
+        }
+        
+        if let search = search {
+            queryItems.append(URLQueryItem(name: "search", value: search))
+        }
+        
+        urlComponents.queryItems = queryItems.isEmpty ? nil : queryItems
+        
         networkManager.fetchData(
-            from: APIEndpoints.personal.rawValue,
+            from: urlComponents.url!.absoluteString,
             modelType: Response.self,
             bearerToken: token,
             completion: { [weak self] result in
@@ -105,26 +118,12 @@ class HomePageViewModel: QuestionProtocol {
                     DispatchQueue.main.async { [weak self] in
                         self?.delegate?.reloadTable()
                     }
-                case .failure(let error):
-                    print("Failed to fetch questions: \(error.localizedDescription)")
+                case .failure(_):
+                    DispatchQueue.main.async {
+                        self?.navigateToHomePage()
+                    }
                 }
             })
-    }
-    
-    private func getToken() -> String {
-        let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
-        let service = "stayConnected"
-        
-        let result = KeyChainManager.get(service: service, account: accessTokenKey) ?? Data()
-        return decodeToken(data: result)
-    }
-    
-    private func decodeToken(data: Data) -> String {
-        if let token = String(data: data, encoding: .utf8) {
-            return token
-        } else {
-            return ""
-        }
     }
     
     private func navigateToHomePage() {
