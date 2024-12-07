@@ -65,7 +65,7 @@ class QuestionsTableView: UIView {
     private func setupTags() {
         tagsCollection?.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tagsCollection ?? UIView())
-        tagsCollection?.delegate = viewModel as? HomePageViewModel
+        tagsCollection?.delegate = viewModel 
     }
     
     private func setupTableView() {

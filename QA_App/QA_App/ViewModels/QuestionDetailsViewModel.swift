@@ -21,10 +21,6 @@ class QuestionDetailsViewModel {
         fetchAnswers(for: questionID!)
     }
     
-    func addAnswer() {
-        
-    }
-    
     private func fetchAnswers(for id: Int) {
         let token = getToken()
         
