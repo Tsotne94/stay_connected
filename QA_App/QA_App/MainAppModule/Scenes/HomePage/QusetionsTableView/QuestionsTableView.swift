@@ -29,11 +29,11 @@ class QuestionsTableView: UIView {
         self.viewModel = viewModel
         super.init(frame: .zero)
         self.tagsCollection = TagsCollectionView()
-        setupView()
-        
         if let homePageViewModel = viewModel as? HomePageViewModel {
             homePageViewModel.delegate = self
         }
+        setupEmpthyView()
+        setupView()
         NotificationCenter.default.addObserver(self, selector: #selector(valueDidChange), name: Notification.Name("generalChanged"), object: nil)
     }
     
@@ -51,18 +51,17 @@ class QuestionsTableView: UIView {
     }
     
     private func setupView() {
-        if viewModel?.questionQount ?? 0 >= 0 {
-            setupSearchBar()
-            setupTags()
-            setupTableView()
-            setupConstraints()
-        }
-        else {
-            setupFirstLabel()
-            setupSecondLabel()
-            setupBackgroundPicture()
-            setupEmpthyConstraints()
-        }
+        setupSearchBar()
+        setupTags()
+        setupTableView()
+        setupConstraints()
+    }
+    
+    private func setupEmpthyView() {
+        setupFirstLabel()
+        setupSecondLabel()
+        setupBackgroundPicture()
+        setupEmpthyConstraints()
     }
     
     private func setupSearchBar() {
@@ -147,7 +146,7 @@ class QuestionsTableView: UIView {
     
     private func setupEmpthyConstraints() {
         NSLayoutConstraint.activate([
-            backImage.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -110),
+            backImage.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -80),
             backImage.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             beFirstLabel.bottomAnchor.constraint(equalTo: backImage.topAnchor, constant: -8),
@@ -181,6 +180,17 @@ extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
 extension QuestionsTableView: ReloadTable {
     func reloadTable() {
         table.reloadData()
+        if viewModel?.questionQount == 0 {
+            table.isHidden = true
+            beFirstLabel.isHidden = false
+            noQuestionsLabel.isHidden = false
+            backImage.isHidden = false
+        } else {
+            beFirstLabel.isHidden = true
+            noQuestionsLabel.isHidden = true
+            backImage.isHidden = true
+            table.isHidden = false
+        }
     }
     
     func reload() {
