@@ -276,5 +276,4 @@ final class LoginPageViewController: UIViewController {
             signUpButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30),
         ])
     }
-
 }

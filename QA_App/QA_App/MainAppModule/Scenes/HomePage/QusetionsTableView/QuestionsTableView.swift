@@ -21,6 +21,7 @@ class QuestionsTableView: UIView {
     private let backImage = UIImageView()
     private var viewModel: QuestionProtocol?
     private var tagsCollection: TagsCollectionView?
+    weak var delegate: QuestionsTableViewDelegate?
     
     init(viewModel: QuestionProtocol) {
             self.viewModel = viewModel
@@ -158,6 +159,11 @@ extension QuestionsTableView: UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: question)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let question = viewModel?.singleQuestion(at: indexPath.row) else { return }
+        delegate?.didSelectQuestion(question: question)
+    }
 }
 
 extension QuestionsTableView: ReloadTable {
@@ -177,12 +183,8 @@ extension QuestionsTableView: ReloadTable {
 extension QuestionsTableView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let homePageViewModel = viewModel as? HomePageViewModel {
-            guard let tagId = tagsCollection?.pressedTag else {
-                homePageViewModel.fetchQuestions(tag: nil, search: searchText)
-                return
-            }
-            let tagName = tagsCollection?.tags[tagId].name
-            homePageViewModel.fetchQuestions(tag: tagName, search: searchText)
+            let tag = tagsCollection?.getTag()
+            homePageViewModel.fetchQuestions(tag: tag, search: searchText)
         }
     }
 }

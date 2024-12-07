@@ -53,7 +53,6 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         nameLabel.textColor = UIColor(named: AppAssets.Colors.bodyText)
         nameLabel.font = .systemFont(ofSize: 15, weight: .bold)
         nameLabel.textAlignment = .left
-        nameLabel.text = "User Useradze"
     }
     
     private func setupDateLabel() {
@@ -63,7 +62,6 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         dateLabel.textColor = UIColor(named: AppAssets.Colors.bodyText)
         dateLabel.font = .systemFont(ofSize: 12, weight: .regular)
         dateLabel.textAlignment = .left
-        dateLabel.text = "Monday, 9 May 2024"
     }
     
     private func setupAnswerLabel() {
@@ -75,7 +73,6 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         answerLabel.textColor = UIColor(named: AppAssets.Colors.bodyText)
         answerLabel.textAlignment = .left
         answerLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        answerLabel.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."        
     }
     
     
@@ -115,5 +112,12 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
             
         ])
         
+    }
+    
+    func configure(with: Answer) {
+        nameLabel.text = with.author
+        dateLabel.text = with.createdAt
+        answerLabel.text = with.content
+        layoutIfNeeded()
     }
 }

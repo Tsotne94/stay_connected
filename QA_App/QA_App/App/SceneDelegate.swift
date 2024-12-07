@@ -15,11 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        let accessTokenKey = "com.tbcAcademy.stayConnected.accessToken"
-        let refreshTokenKey = "com.tbcAcademy.stayConnected.refreshToken"
-        let service = "stayConnected"
-        
-        if let key = KeyChainManager.get(service: service, account: refreshTokenKey) {
+        if KeyChainManager.get(service: service, account: refreshTokenKey) != nil {
             window = UIWindow(windowScene: scene)
             window?.rootViewController = TabBarController()
             window?.makeKeyAndVisible()

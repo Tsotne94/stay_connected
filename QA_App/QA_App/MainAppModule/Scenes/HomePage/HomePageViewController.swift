@@ -8,7 +8,7 @@
 import UIKit
 
 class HomePageViewController: UIViewController, IdentifiableProtocol {
-    private var general = true
+    var general = true
     private let titleLabel = UILabel()
     private let addQuestionButton = UIButton()
     private let generalButton = UIButton()
@@ -19,6 +19,7 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
     init() {
         super.init(nibName: nil, bundle: nil)
         questionsTableView = QuestionsTableView(viewModel: viewModel)
+        questionsTableView?.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -141,7 +142,13 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
             questionsTableView!.leftAnchor.constraint(equalTo: view.leftAnchor),
             questionsTableView!.rightAnchor.constraint(equalTo: view.rightAnchor),
             questionsTableView!.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            
         ])
+    }
+}
+
+extension HomePageViewController: QuestionsTableViewDelegate {
+    func didSelectQuestion(question: Question) {
+        let vc = QuestionsDetailsViewController(question: question)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
