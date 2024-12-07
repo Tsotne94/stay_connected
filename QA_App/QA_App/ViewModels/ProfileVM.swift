@@ -21,7 +21,7 @@ class ProfileViewModel {
 
     var onUpdate: (() -> Void)?
 
-    init(networkService: NetworkPackage) {
+    init(networkService: NetworkPackage = NetworkPackage()) {
         self.networkService = networkService
     }
 
