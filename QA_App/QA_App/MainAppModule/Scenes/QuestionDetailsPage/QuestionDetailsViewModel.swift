@@ -12,6 +12,7 @@ class QuestionDetailsViewModel {
     private var detailedQuestion: DetailedQuestion?
     private var questionID: Int?
     weak var delegate: ReloadTable?
+    weak var alertDelegate: AlertDelegate?
     
     let networkManager: NetworkPackage
     
@@ -105,6 +106,9 @@ class QuestionDetailsViewModel {
                     self?.fetchAnswers(for: self!.questionID!)
                 case .failure(let failure):
                     print("failed \(failure.localizedDescription)")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.alertDelegate?.alert()
+                    }
                 }
             }
     }

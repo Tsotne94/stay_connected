@@ -152,7 +152,7 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
     }
 }
 
-extension HomePageViewController: QuestionsTableViewDelegate {
+extension HomePageViewController: QuestionsTableViewDelegate {    
     func didSelectQuestion(question: Question) {
         if general {
             let vc = QuestionsDetailsViewController(question: question, acceptable: false)

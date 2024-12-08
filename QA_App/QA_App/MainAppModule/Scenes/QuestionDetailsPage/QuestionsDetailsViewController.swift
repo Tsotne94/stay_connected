@@ -12,6 +12,10 @@ protocol QuestionsTableViewDelegate: AnyObject {
     func didSelectQuestion(question: Question)
 }
 
+protocol AlertDelegate: AnyObject {
+    func alert()
+}
+
 class QuestionsDetailsViewController: UIViewController {
     private let backButton = UIButton()
     private let subjectLabel = UILabel()
@@ -31,6 +35,7 @@ class QuestionsDetailsViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         viewModel = QuestionDetailsViewModel(id: question.id)
         viewModel?.delegate = self
+        viewModel?.alertDelegate = self
         self.acceptable = acceptable ?? false
         self.question = question
     }
@@ -314,6 +319,12 @@ extension QuestionsDetailsViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         answerTextView.adjustHeight()
         updatePlaceholderVisibility()
+    }
+}
+
+extension QuestionsDetailsViewController: AlertDelegate {
+    func alert() {
+        showAlert(title: "One Answer Already Accepted", message: "You Can Not Have Two Accepted Answers At The Same Time")
     }
 }
 
