@@ -32,7 +32,7 @@ class ProfileViewModel {
             modelType: UserProfile.self,
             bearerToken: token
         ) { [weak self] result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 switch result {
                 case .success(let profile):
                     self?.userProfile = profile

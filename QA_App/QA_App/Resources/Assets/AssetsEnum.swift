@@ -24,6 +24,7 @@ enum AppAssets {
         static let bodyText = "textBlackColor"
         static let replayColor = "replayColor"
         static let addBackground = "addBackground"
+        static let reject = "rejectColor"
     }
 
     enum Icons {

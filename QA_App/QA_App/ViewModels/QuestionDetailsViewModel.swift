@@ -71,17 +71,76 @@ class QuestionDetailsViewModel {
                     self?.fetchAnswers(for: self!.questionID!)
                 case .failure(let failure):
                     print("failed to post answer \(failure.localizedDescription)")
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
                         self?.delegate?.reload()
                     }
                 }
             }
     }
     
-    var replayCount: Int {
-        if (detailedQuestion?.acceptedAnswer) != nil {
-            return (detailedQuestion?.answers.count ?? 0) + 1
+    func acceptAnswer(at id: Int, accept: AcceptRequest) {
+        let token = getToken()
+        
+        
+        var urlComponents = URLComponents(string: APIEndpoints.qusetion.rawValue)!
+        guard let id = questionID else { return  }
+        urlComponents.path += "\(id)/"
+        urlComponents.path += "accept_or_reject_answer/"
+        
+        guard urlComponents.url != nil else {
+            print("wrong URL fetch answers path")
+            return
         }
+        
+        networkManager.postData(
+            to: urlComponents.url!.absoluteString,
+            modelType: AcceptRequest.self,
+            requestBody: accept,
+            bearerToken: token) { [weak self] result in
+                switch result {
+                case .success(_):
+                    self?.fetchAnswers(for: self!.questionID!)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
+                case .failure(let failure):
+                    print("failed \(failure.localizedDescription)")
+                }
+            }
+    }
+    
+    func rejectAnswer(at id: Int, accept: RejectRequest) {
+        let token = getToken()
+        
+        
+        var urlComponents = URLComponents(string: APIEndpoints.qusetion.rawValue)!
+        guard let id = questionID else { return  }
+        urlComponents.path += "\(id)/"
+        urlComponents.path += "accept_or_reject_answer/"
+        
+        guard urlComponents.url != nil else {
+            print("wrong URL fetch answers path")
+            return
+        }
+        
+        networkManager.postData(
+            to: urlComponents.url!.absoluteString,
+            modelType: RejectRequest.self,
+            requestBody: accept,
+            bearerToken: token) { [weak self] result in
+                switch result {
+                case .success(_):
+                    self?.fetchAnswers(for: self!.questionID!)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
+                case .failure(let failure):
+                    print("failed \(failure.localizedDescription)")
+                }
+            }
+    }
+    
+    var replayCount: Int {
         return detailedQuestion?.answers.count ?? 0
     }
     
@@ -89,7 +148,7 @@ class QuestionDetailsViewModel {
         detailedQuestion?.answers[index]
     }
     
-    func acceptedAnswer() -> Answer? {
+    func acceptedAnswer() -> Int? {
         detailedQuestion?.acceptedAnswer
     }
 }
