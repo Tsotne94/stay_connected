@@ -62,7 +62,7 @@ class AnsweredQuestionsViewModel: QuestionProtocol {
                         self?.delegate?.reloadTable()
                     }
                 case .failure(_):
-                    print("failed to fetch data in \(self)")
+                    print("failed to fetch data in \(String(describing: self))")
                 }
             })
     }

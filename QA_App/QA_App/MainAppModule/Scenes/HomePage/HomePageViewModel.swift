@@ -53,6 +53,9 @@ class HomePageViewModel: QuestionProtocol {
                     }
                 case .failure(let error):
                     print("Error fetching tags: \(error)")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.navigateToHomePage()
+                    }
                 }
             }
     }

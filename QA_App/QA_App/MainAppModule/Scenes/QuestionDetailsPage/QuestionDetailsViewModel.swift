@@ -44,6 +44,9 @@ class QuestionDetailsViewModel {
                     }
                 case .failure(let error):
                     print("faliure \(error.localizedDescription)")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.navigateToHomePage()
+                    }
                 }
             }
     }
@@ -100,9 +103,6 @@ class QuestionDetailsViewModel {
                 switch result {
                 case .success(_):
                     self?.fetchAnswers(for: self!.questionID!)
-                    DispatchQueue.main.async { [weak self] in
-                        self?.delegate?.reload()
-                    }
                 case .failure(let failure):
                     print("failed \(failure.localizedDescription)")
                 }
@@ -131,13 +131,15 @@ class QuestionDetailsViewModel {
                 switch result {
                 case .success(_):
                     self?.fetchAnswers(for: self!.questionID!)
-                    DispatchQueue.main.async { [weak self] in
-                        self?.delegate?.reload()
-                    }
                 case .failure(let failure):
                     print("failed \(failure.localizedDescription)")
                 }
             }
+    }
+    
+    private func navigateToHomePage() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.window?.rootViewController = UINavigationController(rootViewController: LoginPageViewController())
     }
     
     var replayCount: Int {
@@ -150,5 +152,18 @@ class QuestionDetailsViewModel {
     
     func acceptedAnswer() -> Int? {
         detailedQuestion?.acceptedAnswer
+    }
+    
+    var sortedAnswers: [Answer] {
+        guard let allAnswers = detailedQuestion?.answers else { return [] }
+        guard let acceptedId = detailedQuestion?.acceptedAnswer else { return allAnswers }
+        
+        if let acceptedIndex = allAnswers.firstIndex(where: { $0.id == acceptedId }) {
+            var answers = allAnswers
+            let acceptedAnswer = answers.remove(at: acceptedIndex)
+            return [acceptedAnswer] + answers
+        }
+        
+        return allAnswers
     }
 }

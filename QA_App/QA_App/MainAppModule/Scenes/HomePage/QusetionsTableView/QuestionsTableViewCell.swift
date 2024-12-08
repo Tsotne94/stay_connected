@@ -132,11 +132,13 @@ class QuestionsTableViewCell: UITableViewCell, IdentifiableProtocol {
         titleLabel.text = question.title
         replayCountLabel.text = "replies: \(question.answersCount)"
         subjectLabel.text = question.content
-        
-        if question.acceptedAnswer == nil {
+
+        if question.acceptedAnswer != nil {
+            hasAcceptedAnswerMark.isHidden = false
+        } else {
             hasAcceptedAnswerMark.isHidden = true
         }
-        
+
         tagsView.updateTags(question.tags)
     }
 }

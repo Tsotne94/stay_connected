@@ -12,7 +12,6 @@ struct AnswerModelRequest: Codable {
     var content: String
 }
 
-// The Detailed Question Model
 struct DetailedQuestion: Codable {
     let id: Int
     let author: Author
@@ -21,7 +20,7 @@ struct DetailedQuestion: Codable {
     let tags: [Tag]
     let createdAt: String
     let updatedAt: String
-    var acceptedAnswer: Int?  // Change from Answer to Int (to store ID)
+    var acceptedAnswer: Int?
     var answers: [Answer]
     
     enum CodingKeys: String, CodingKey {
@@ -37,7 +36,6 @@ struct DetailedQuestion: Codable {
     }
 }
 
-// The Answer Model used for answers
 struct Answer: Codable {
     let id: Int
     let author: Author

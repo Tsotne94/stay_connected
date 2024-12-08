@@ -23,7 +23,7 @@ class TabBarController: UITabBarController {
     private func setupTabs() {
         
         let homePage = createTab(icon: AppAssets.Icons.home, vc: HomePageViewController(), identifier: HomePageViewController.reuseIdentifier, title: PageTitles.home.rawValue )
-        let leaderBoardPage = createTab(icon: AppAssets.Icons.award, vc: LeaderBoardViewController(), identifier: LeaderBoardViewController.reuseIdentifier, title: PageTitles.leaderBoard.rawValue)
+        let leaderBoardPage = createTab(icon: AppAssets.Icons.award, vc: UIViewController(), identifier: "not", title: PageTitles.leaderBoard.rawValue)
         let profilePage = createTab(icon: AppAssets.Icons.user, vc: ProfilePageViewController(), identifier: ProfilePageViewController.reuseIdentifier, title: PageTitles.profile.rawValue)
         
         customizeTabBarAppearance()

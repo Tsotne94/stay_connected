@@ -32,6 +32,8 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         setupDateLabel()
         setupAnswerLabel()
         setupConstraints()
+        setupAnswerLabel()
+        setupAcceptedBagde()
     }
     
     private func setupProfileImage() {
@@ -78,9 +80,11 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         acceptedBadge.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(acceptedBadge)
         
+        acceptedBadge.image = UIImage(named: AppAssets.Icons.badgeAccepted)
+    
+        acceptedBadge.backgroundColor = .clear
         acceptedBadge.clipsToBounds = true
         acceptedBadge.contentMode = .scaleAspectFit
-        acceptedBadge.image = UIImage(named: AppAssets.Icons.badgeAccepted)
         
         NSLayoutConstraint.activate([
             acceptedBadge.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
@@ -108,18 +112,21 @@ class AnswersTableViewCell: UITableViewCell, IdentifiableProtocol {
         ])
     }
     
-    func configure(answer: Answer) {
-        nameLabel.text = answer.author.fullName
-        dateLabel.text = dateFormatter.format(answer.createdAt)
-        answerLabel.text = answer.content
-        layoutIfNeeded()
-    }
-    
-    func setupAccepted(answer: Answer) {
-        nameLabel.text = answer.author.fullName
-        dateLabel.text = dateFormatter.format(answer.createdAt)
-        answerLabel.text = answer.content
-        setupAnswerLabel()
-        layoutIfNeeded()
+    func configure(answer: Answer, isAccepted:  Bool) {
+        if isAccepted {
+            nameLabel.text = answer.author.fullName
+            dateLabel.text = dateFormatter.format(answer.createdAt)
+            answerLabel.text = answer.content
+            acceptedBadge.isHidden = false
+            layoutIfNeeded()
+        } else {
+            nameLabel.text = answer.author.fullName
+            dateLabel.text = dateFormatter.format(answer.createdAt)
+            answerLabel.text = answer.content
+            acceptedBadge.isHidden = true
+            layoutIfNeeded()
+        }
+        
+        print(isAccepted)
     }
 }

@@ -6,7 +6,6 @@
 //
 import UIKit
 
-
 extension UITextView {
     func adjustHeight() {
         let size = CGSize(width: self.frame.width, height: .infinity)
