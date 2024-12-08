@@ -11,13 +11,32 @@ protocol LeaderReload: AnyObject {
 }
 
 class LeaderboardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, IdentifiableProtocol {
+    private let titleLabel = UILabel()
     private var tableView: UITableView!
     private var viewModel: LeaderBoardViewModel?
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.isNavigationBarHidden = true
+        view.backgroundColor = .white
+        setupTitleLabel()
         viewModel = LeaderBoardViewModel()
         viewModel?.delegate = self
         setupTableView()
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(titleLabel)
+        
+        titleLabel.text = "LeaderBoard"
+        titleLabel.font = UIFont(name: MyFonts.anekBold.rawValue, size: 20)
+        titleLabel.textAlignment = .left
+        
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15),
+            titleLabel.heightAnchor.constraint(equalToConstant: 20),
+        ])
     }
     
     private func setupTableView() {
@@ -29,7 +48,7 @@ class LeaderboardViewController: UIViewController, UITableViewDelegate, UITableV
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
