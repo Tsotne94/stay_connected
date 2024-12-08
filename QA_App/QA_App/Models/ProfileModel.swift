@@ -22,3 +22,8 @@ struct UserProfile: Codable {
         case profilePicture = "profile_picture"
     }
 }
+
+
+
+
+

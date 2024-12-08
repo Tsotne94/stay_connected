@@ -1,21 +1,14 @@
-//
-//  ProfilePageViewController.swift
-//  QA_App
-//
-//  Created by Cotne Chubinidze on 29.11.24.
-//
-
+import Alamofire
 import UIKit
 
-class ProfilePageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, IdentifiableProtocol {
-
+class ProfilePageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, IdentifiableProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     private let imageView = UIImageView()
     private let fullnameLabel = UILabel()
     private let emailLabel = UILabel()
     private let tableView = UITableView()
     private let titleLabel = UILabel()
     private let imageButton = UIButton()
-
     private let viewModel = ProfileViewModel()
 
     override func viewDidLoad() {
@@ -37,14 +30,8 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
     private func updateUI() {
         fullnameLabel.text = viewModel.userProfile?.fullName ?? "No Name"
         emailLabel.text = viewModel.userProfile?.email ?? "No Email"
+        
         tableView.reloadData()
-
-    }
-
-    private func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 
     private func setupUI() {
@@ -60,7 +47,6 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
     private func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
-
         titleLabel.text = "Profile"
         titleLabel.font = UIFont(name: MyFonts.anekBold.rawValue, size: 20)
         titleLabel.textAlignment = .left
@@ -80,11 +66,11 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
     private func setupImageButton() {
         imageButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageButton)
-
         imageButton.setImage(UIImage(named: AppAssets.Icons.camera), for: .normal)
         imageButton.setTitle("", for: .normal)
         imageButton.backgroundColor = .clear
         imageButton.clipsToBounds = true
+        imageButton.addTarget(self, action: #selector(didTapChangeProfileImage), for: .touchUpInside)
     }
 
     private func setupFullnameLabel() {
@@ -179,15 +165,66 @@ class ProfilePageViewController: UIViewController, UITableViewDataSource, UITabl
         if indexPath.row == 2 {
             KeyChainManager.deleteAllKeychainItems()
             navigateToLoginPage()
-
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
 
     private func navigateToLoginPage() {
-            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-            sceneDelegate?.window?.rootViewController = UINavigationController(rootViewController: LoginPageViewController())
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.window?.rootViewController = UINavigationController(rootViewController: LoginPageViewController())
+    }
+
+    @objc private func didTapChangeProfileImage() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        imagePickerController.allowsEditing = true
+        present(imagePickerController, animated: true, completion: nil)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            imageView.image = image
+            
+            if let compressedImageData = image.jpegData(compressionQuality: 0.5) {
+                uploadImageWithAlamofire(imageData: compressedImageData)
+            } else {
+                print("Failed to compress image.")
+            }
         }
-    
+        dismiss(animated: true, completion: nil)
+    }
+    func uploadImageWithAlamofire(imageData: Data) {
+        let token = getToken()
+        let url = "http://52.203.162.247/api/user/profile/"
+
+        AF.upload(multipartFormData: { multipartFormData in
+            multipartFormData.append(imageData, withName: "profile_picture", fileName: "image.jpg", mimeType: "image/jpeg")
+        }, to: url, method: .put, headers: [
+            "Authorization": "Bearer \(token)"
+        ])
+        .response { response in
+            switch response.result {
+            case .success(let data):
+                print("Image uploaded successfully!")
+
+                if let data = data {
+                    do {
+                        let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers)
+                        print("Response JSON: \(json)")
+                    } catch {
+                        if let responseString = String(data: data, encoding: .utf8) {
+                            print("Response String: \(responseString)")
+                        } else {
+                            print("Unable to decode response data.")
+                        }
+                    }
+                } else {
+                    print("No data in response.")
+                }
+            case .failure(let error):
+                print("Failed to upload image: \(error.localizedDescription)")
+            }
+        }
+    }
 }

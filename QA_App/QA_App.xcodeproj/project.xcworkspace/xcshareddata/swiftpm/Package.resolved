@@ -1,6 +1,15 @@
 {
-  "originHash" : "2e4d87a9c4200450c2b6a3e98a36d295363489d2d504b7c754c6c496d3602c30",
+  "originHash" : "3a33a9a1cd30ee0a6c858b2794e5def95326183c56ffe8c3bc66bcf5588cc915",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
     {
       "identity" : "dataformatter",
       "kind" : "remoteSourceControl",
@@ -16,7 +25,7 @@
       "location" : "https://github.com/Tsotne94/NetworkManager.git",
       "state" : {
         "branch" : "main",
-        "revision" : "620d92acdc9f3a5d1178c1bea644a58913ade79f"
+        "revision" : "e734b55ef2a38c4d85f50f01c19cc699fe9bfd91"
       }
     }
   ],
