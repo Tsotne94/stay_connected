@@ -13,3 +13,11 @@ struct AcceptRequest: Codable {
         case answer_id = "answer_id"
     }
 }
+
+struct RejectRequest: Codable {
+    var answer_id: String?
+
+    enum CodingKeys: String, CodingKey {
+        case answer_id = "answer_id"
+    }
+}

@@ -91,7 +91,7 @@ class AnsweredQuestionsViewController: UIViewController {
 
 extension AnsweredQuestionsViewController: AnsweredDelegate {
     func didSelectQuestion(question: Question) {
-        let vc = QuestionsDetailsViewController(question: question, acceptable: true)
+        let vc = QuestionsDetailsViewController(question: question, acceptable: false)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

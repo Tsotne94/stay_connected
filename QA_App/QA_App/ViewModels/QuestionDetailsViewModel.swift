@@ -100,6 +100,40 @@ class QuestionDetailsViewModel {
                 switch result {
                 case .success(_):
                     self?.fetchAnswers(for: self!.questionID!)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
+                case .failure(let failure):
+                    print("failed \(failure.localizedDescription)")
+                }
+            }
+    }
+    
+    func rejectAnswer(at id: Int, accept: RejectRequest) {
+        let token = getToken()
+        
+        
+        var urlComponents = URLComponents(string: APIEndpoints.qusetion.rawValue)!
+        guard let id = questionID else { return  }
+        urlComponents.path += "\(id)/"
+        urlComponents.path += "accept_or_reject_answer/"
+        
+        guard urlComponents.url != nil else {
+            print("wrong URL fetch answers path")
+            return
+        }
+        
+        networkManager.postData(
+            to: urlComponents.url!.absoluteString,
+            modelType: RejectRequest.self,
+            requestBody: accept,
+            bearerToken: token) { [weak self] result in
+                switch result {
+                case .success(_):
+                    self?.fetchAnswers(for: self!.questionID!)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.delegate?.reload()
+                    }
                 case .failure(let failure):
                     print("failed \(failure.localizedDescription)")
                 }

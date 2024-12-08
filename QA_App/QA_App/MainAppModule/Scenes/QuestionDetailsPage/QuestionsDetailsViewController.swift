@@ -260,38 +260,47 @@ extension QuestionsDetailsViewController: UITableViewDataSource, UITableViewDele
         
         let answer = viewModel?.singleAnswer(at: indexPath.row)
         
-        if ((viewModel?.acceptedAnswer()) == nil) && acceptable {
-            let accept = AcceptRequest(answer_id: answer?.id)
-            let acceptAction = UIContextualAction(style: .normal, title: "Accept") { (action, view, completionHandler) in
-                print("Accepted answer at row \(indexPath.row)")
-                if let id = answer?.id {
-                    self.viewModel?.acceptAnswer(at: id, accept: accept)
+        if let answerId = answer?.id, isSwipeableRow(forAnswerId: answerId) {
+            
+            if ((viewModel?.acceptedAnswer()) == nil) && acceptable {
+                let accept = AcceptRequest(answer_id: answer?.id)
+                let acceptAction = UIContextualAction(style: .normal, title: "Accept") { (action, view, completionHandler) in
+                    print("Accepted answer at row \(indexPath.row)")
+                    if let id = answer?.id {
+                        self.viewModel?.acceptAnswer(at: id, accept: accept)
+                    }
+                    completionHandler(true)
                 }
-                completionHandler(true)
-            }
-            
-            acceptAction.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
-            let configuration = UISwipeActionsConfiguration(actions: [acceptAction])
-            configuration.performsFirstActionWithFullSwipe = false
-            return configuration
-            
-        } else if acceptable && viewModel?.acceptedAnswer() == indexPath.row {
-            let accept = AcceptRequest(answer_id: nil)
-            let rejectAction = UIContextualAction(style: .destructive, title: "Reject") { (action, view, completionHandler) in
-                print("Rejected answer at row \(indexPath.row)")
-                if let id = answer?.id {
-                    self.viewModel?.acceptAnswer(at: id, accept: accept)
+                acceptAction.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
+                
+                let configuration = UISwipeActionsConfiguration(actions: [acceptAction])
+                configuration.performsFirstActionWithFullSwipe = false
+                return configuration
+                
+            } else if acceptable {
+                let accept = RejectRequest(answer_id: "null")
+                let rejectAction = UIContextualAction(style: .destructive, title: "Reject") { (action, view, completionHandler) in
+                    print("Rejected answer at row \(indexPath.row)")
+                    if let id = answer?.id {
+                        self.viewModel?.rejectAnswer(at: id, accept: accept)
+                    }
+                    completionHandler(true)
                 }
-                completionHandler(true)
+                rejectAction.backgroundColor = UIColor(named: AppAssets.Colors.reject)
+                
+                let configuration = UISwipeActionsConfiguration(actions: [rejectAction])
+                configuration.performsFirstActionWithFullSwipe = false
+                return configuration
             }
-            rejectAction.backgroundColor = UIColor(named: AppAssets.Colors.reject)
-            
-            let configuration = UISwipeActionsConfiguration(actions: [rejectAction])
-            configuration.performsFirstActionWithFullSwipe = false
-            return configuration
-        } else {
-            return nil
         }
+        
+        return nil
+    }
+
+    func isSwipeableRow(forAnswerId answerId: Int?) -> Bool {
+        guard let answerId = answerId else { return false }
+        
+        return answerId == viewModel?.acceptedAnswer()
     }
 }
 
