@@ -7,7 +7,6 @@
 
 import Foundation
 
-// Answer Model used in the request
 struct AnswerModelRequest: Codable {
     var content: String
 }
