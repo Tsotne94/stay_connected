@@ -154,7 +154,7 @@ class HomePageViewController: UIViewController, IdentifiableProtocol {
 
 extension HomePageViewController: QuestionsTableViewDelegate {
     func didSelectQuestion(question: Question) {
-        let vc = QuestionsDetailsViewController(question: question)
+        let vc = QuestionsDetailsViewController(question: question, acceptable: true)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

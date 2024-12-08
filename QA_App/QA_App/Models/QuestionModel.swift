@@ -17,7 +17,7 @@ struct Question: Codable {
     let author: Author
     let title: String
     let content: String
-    let acceptedAnswer: String?
+    let acceptedAnswer: Int?
     let createdAt: String
     let answersCount: Int
     let tags: [Tag]

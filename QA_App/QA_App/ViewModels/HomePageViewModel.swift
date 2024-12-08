@@ -81,8 +81,9 @@ class HomePageViewModel: QuestionProtocol {
                     DispatchQueue.main.async { [weak self] in
                         self?.delegate?.reloadTable()
                     }
-                case .failure(_):
-                    DispatchQueue.main.async {
+                case .failure(let error):
+                    print("Error fetching tags: \(error)")
+                    DispatchQueue.main.async { [weak self] in
                         self?.navigateToHomePage()
                     }
                 }
@@ -117,7 +118,7 @@ class HomePageViewModel: QuestionProtocol {
                         self?.delegate?.reloadTable()
                     }
                 case .failure(_):
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
                         self?.navigateToHomePage()
                     }
                 }

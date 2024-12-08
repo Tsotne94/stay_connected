@@ -24,12 +24,14 @@ class QuestionsDetailsViewController: UIViewController {
     private var viewModel: QuestionDetailsViewModel?
     private let dateFormatter = MyDateFormatter()
     private let placeholderLabel = UILabel()
+    private var acceptable: Bool = false
 
     
-    init(question: Question) {
+    init(question: Question, acceptable: Bool?) {
         super.init(nibName: nil, bundle: nil)
         viewModel = QuestionDetailsViewModel(id: question.id)
         viewModel?.delegate = self
+        self.acceptable = acceptable ?? false
         self.question = question
     }
     
@@ -150,8 +152,8 @@ class QuestionsDetailsViewController: UIViewController {
         answerTextView.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         answerTextView.textContainerInset = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 35)
         answerTextView.textContainer.lineFragmentPadding = 0
-
-
+        
+        
     }
     
     @objc private func answerTapped() {
@@ -225,32 +227,71 @@ extension QuestionsDetailsViewController: UITableViewDataSource, UITableViewDele
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AnswersTableViewCell.reuseIdentifier, for: indexPath) as! AnswersTableViewCell
-        if indexPath.row == 0, let answer = viewModel?.acceptedAnswer() {
-               setImage(for: cell.profileImageView, with: answer.author.imageUrl)
-               cell.setupAccepted(answer: answer)
-               return cell
-           }
-
-           let singleAnswerIndex = indexPath.row - (viewModel?.acceptedAnswer() != nil ? 1 : 0)
-           guard let answer = viewModel?.singleAnswer(at: singleAnswerIndex) else {
-               return cell
-           }
-
-           setImage(for: cell.profileImageView, with: answer.author.imageUrl)
-           cell.configure(answer: answer)
-           return cell
-       }
-
-       private func setImage(for imageView: UIImageView, with imageUrl: String?) {
-           if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
-               imageView.load(url: url)
-           } else {
-               imageView.image = UIImage(systemName: "person.fill")
-           }
+        
+        if viewModel?.acceptedAnswer() == indexPath.row {
+            guard let answer = viewModel?.singleAnswer(at: indexPath.row) else { return cell }
+            setImage(for: cell.profileImageView, with: answer.author.imageUrl)
+            cell.setupAccepted(answer: answer)
+            return cell
+        }
+        
+        guard let answer = viewModel?.singleAnswer(at: indexPath.row) else {
+            return cell
+        }
+        
+        setImage(for: cell.profileImageView, with: answer.author.imageUrl)
+        cell.configure(answer: answer)
+        return cell
+    }
+    
+    private func setImage(for imageView: UIImageView, with imageUrl: String?) {
+        if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
+            imageView.load(url: url)
+        } else {
+            imageView.image = UIImage(systemName: "person.fill")
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let answer = viewModel?.singleAnswer(at: indexPath.row)
+        
+        if ((viewModel?.acceptedAnswer()) == nil) && acceptable {
+            let accept = AcceptRequest(answer_id: answer?.id)
+            let acceptAction = UIContextualAction(style: .normal, title: "Accept") { (action, view, completionHandler) in
+                print("Accepted answer at row \(indexPath.row)")
+                if let id = answer?.id {
+                    self.viewModel?.acceptAnswer(at: id, accept: accept)
+                }
+                completionHandler(true)
+            }
+            
+            acceptAction.backgroundColor = UIColor(named: AppAssets.Colors.primaryButtonHighlighted)
+            let configuration = UISwipeActionsConfiguration(actions: [acceptAction])
+            configuration.performsFirstActionWithFullSwipe = false
+            return configuration
+            
+        } else if acceptable && viewModel?.acceptedAnswer() == indexPath.row {
+            let accept = AcceptRequest(answer_id: nil)
+            let rejectAction = UIContextualAction(style: .destructive, title: "Reject") { (action, view, completionHandler) in
+                print("Rejected answer at row \(indexPath.row)")
+                if let id = answer?.id {
+                    self.viewModel?.acceptAnswer(at: id, accept: accept)
+                }
+                completionHandler(true)
+            }
+            rejectAction.backgroundColor = UIColor(named: AppAssets.Colors.reject)
+            
+            let configuration = UISwipeActionsConfiguration(actions: [rejectAction])
+            configuration.performsFirstActionWithFullSwipe = false
+            return configuration
+        } else {
+            return nil
+        }
     }
 }
 
