@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1FBBCA832CFA1DB700E4F2E5 /* MyNetworkManager in Frameworks */ = {isa = PBXBuildFile; productRef = 1FBBCA822CFA1DB700E4F2E5 /* MyNetworkManager */; };
+		1FBFE21E2D05E5D900020BF9 /* MyDateFormatter in Frameworks */ = {isa = PBXBuildFile; productRef = 1FBFE21D2D05E5D900020BF9 /* MyDateFormatter */; };
+		1FBFE2212D05E5E500020BF9 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 1FBFE2202D05E5E500020BF9 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FBFE2212D05E5E500020BF9 /* Alamofire in Frameworks */,
 				1FBBCA832CFA1DB700E4F2E5 /* MyNetworkManager in Frameworks */,
+				1FBFE21E2D05E5D900020BF9 /* MyDateFormatter in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +88,8 @@
 			name = QA_App;
 			packageProductDependencies = (
 				1FBBCA822CFA1DB700E4F2E5 /* MyNetworkManager */,
+				1FBFE21D2D05E5D900020BF9 /* MyDateFormatter */,
+				1FBFE2202D05E5E500020BF9 /* Alamofire */,
 			);
 			productName = QA_App;
 			productReference = 1FBBC9CE2CF9FC8000E4F2E5 /* QA_App.app */;
@@ -115,6 +121,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1FBBCA812CFA1DB700E4F2E5 /* XCRemoteSwiftPackageReference "NetworkManager" */,
+				1FBFE21C2D05E5D900020BF9 /* XCRemoteSwiftPackageReference "dataFormatter" */,
+				1FBFE21F2D05E5E500020BF9 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1FBBC9CF2CF9FC8000E4F2E5 /* Products */;
@@ -352,6 +360,22 @@
 				kind = branch;
 			};
 		};
+		1FBFE21C2D05E5D900020BF9 /* XCRemoteSwiftPackageReference "dataFormatter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Tsotne94/dataFormatter.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		1FBFE21F2D05E5E500020BF9 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -359,6 +383,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1FBBCA812CFA1DB700E4F2E5 /* XCRemoteSwiftPackageReference "NetworkManager" */;
 			productName = MyNetworkManager;
+		};
+		1FBFE21D2D05E5D900020BF9 /* MyDateFormatter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1FBFE21C2D05E5D900020BF9 /* XCRemoteSwiftPackageReference "dataFormatter" */;
+			productName = MyDateFormatter;
+		};
+		1FBFE2202D05E5E500020BF9 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1FBFE21F2D05E5E500020BF9 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
